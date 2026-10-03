@@ -18,6 +18,7 @@ export function attemptToMarkdown(attempt: Attempt, c: SimulationCase): string {
   lines.push(`- **Case type:** ${attempt.caseTypes.map((t) => CASE_TYPE_LABELS[t]).join(", ")}`);
   lines.push(`- **Skills tested:** ${attempt.skills.map((s) => SKILL_LABELS[s]).join(", ")}`);
   lines.push(`- **Score:** ${attempt.score ? `${attempt.score.total}/100` : "not scored"}`);
+  lines.push(`- **Hints used:** ${attempt.hintsUsed.length ? attempt.hintsUsed.join(", ") : "none"}`);
   lines.push(`- **Plan:** ${c.plan.planId === "rhus" ? "Remote Health USA (official rules cited)" : `${c.plan.name} (fictional)`}${c.isSample ? " · sample case" : ""}`);
   if (c.knowledge.planRules.length) lines.push(`- **Plan rules tested:** ${c.knowledge.planRules.join(", ")}`);
   lines.push("");

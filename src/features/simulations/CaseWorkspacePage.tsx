@@ -10,6 +10,7 @@ import { attemptRepository, newId, useAttempts } from "@/lib/storage/attempts";
 import { DOCUMENT_TYPE_LABELS, DocumentViewer, NetworkBadge } from "./DocumentViewer";
 import { TaskInput } from "./TaskInput";
 import { KnowledgeTested } from "./KnowledgeTested";
+import { DIFFICULTY_META } from "./SimulationsPage";
 
 export function CaseWorkspacePage() {
   const { caseId } = useParams();
@@ -36,6 +37,7 @@ function startAttempt(c: SimulationCase): Attempt {
     status: "in_progress",
     startedAt: new Date().toISOString(),
     investigationNotes: "",
+    hintsUsed: [],
     answers: {},
     criterionResults: {},
   };
@@ -56,7 +58,7 @@ function CaseBrief({ c, previous }: { c: SimulationCase; previous: Attempt[] }) 
         <Card title="Briefing" className="lg:col-span-2">
           <KeyValue
             items={[
-              ["Difficulty", c.difficulty],
+              ["Difficulty", DIFFICULTY_META[c.difficulty].label],
               ["Covers", <div className="flex flex-wrap gap-1">{c.caseTypes.map((t) => <Badge key={t}>{CASE_TYPE_LABELS[t]}</Badge>)}</div>],
               ["Evidence", `${c.documents.length} documents`],
               ["Tasks", `${c.tasks.length} (structured answers, an investigation write-up, and a member reply)`],
@@ -144,7 +146,7 @@ function Workspace({ c, attempt }: { c: SimulationCase; attempt: Attempt }) {
           </Card>
 
           <Card bodyClassName="p-0">
-            <div className="flex gap-0.5 overflow-x-auto border-b border-line px-2 pt-2" role="tablist">
+            <div className="flex flex-wrap gap-x-0.5 gap-y-1 border-b border-line px-2 pt-2" role="tablist">
               {c.documents.map((d) => (
                 <button
                   key={d.id}
@@ -152,11 +154,11 @@ function Workspace({ c, attempt }: { c: SimulationCase; attempt: Attempt }) {
                   aria-selected={d.id === doc.id}
                   onClick={() => setDocId(d.id)}
                   className={cx(
-                    "-mb-px rounded-t-md border px-3 py-1.5 text-[12px] font-medium whitespace-nowrap",
+                    "-mb-px rounded-t-md border px-2.5 py-1.5 text-[12px] font-medium whitespace-nowrap",
                     d.id === doc.id ? "border-line border-b-white bg-white text-ink" : "border-transparent text-ink-muted hover:text-ink",
                   )}
                 >
-                  {DOCUMENT_TYPE_LABELS[d.type]}
+                  {tabLabel(c, d)}
                 </button>
               ))}
             </div>
@@ -208,7 +210,13 @@ function Workspace({ c, attempt }: { c: SimulationCase; attempt: Attempt }) {
               actions={isAnswered(attempt.answers[t.id]) ? <Badge tone="green">Answered</Badge> : undefined}
             >
               <p className="mb-3 font-medium">{t.prompt}</p>
-              {t.hint && <p className="-mt-2 mb-3 text-[12px] text-ink-muted">{t.hint}</p>}
+              {t.hint && (
+                <HintToggle
+                  hint={t.hint}
+                  revealed={attempt.hintsUsed.includes(t.id)}
+                  onReveal={() => update({ hintsUsed: [...attempt.hintsUsed, t.id] })}
+                />
+              )}
               <TaskInput task={t} answer={attempt.answers[t.id]} onChange={(a) => setAnswer(t.id, a)} />
             </Card>
           ))}
@@ -226,4 +234,20 @@ function isAnswered(a: Answer | undefined) {
   if (a.kind === "choice") return a.optionIds.length > 0;
   if (a.kind === "amount") return a.cents !== null;
   return a.text.trim().length > 0;
+}
+
+/** Hints stay hidden unless the trainee asks; using one is recorded on the attempt. */
+function HintToggle({ hint, revealed, onReveal }: { hint: string; revealed: boolean; onReveal: () => void }) {
+  if (revealed) return <p className="-mt-2 mb-3 rounded bg-amber-50 px-2 py-1 text-[12px] text-amber-900">Hint: {hint}</p>;
+  return (
+    <button type="button" onClick={onReveal} className="-mt-2 mb-3 text-[12px] font-medium text-ink-faint hover:text-ink-muted hover:underline">
+      Show hint (recorded)
+    </button>
+  );
+}
+
+/** Type label, or the document's own title when several documents share a type (e.g. "EOB: surgeon"). */
+function tabLabel(c: SimulationCase, d: SimulationCase["documents"][number]) {
+  const sameType = c.documents.filter((x) => x.type === d.type).length > 1;
+  return sameType ? d.title.replace(/^Explanation of Benefits: /, "EOB: ").replace(/^Claim record: /, "Claim: ") : DOCUMENT_TYPE_LABELS[d.type];
 }

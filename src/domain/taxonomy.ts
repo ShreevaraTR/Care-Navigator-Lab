@@ -64,7 +64,10 @@ export const CASE_TYPE_LABELS: Record<CaseType, string> = {
   complex: "Complex multi-issue",
 };
 
-/** Fine-grained skills, used for portfolio tagging and coverage tracking across the 20 cases. */
+/**
+ * The 20 portfolio skills (SafetyWing Care Navigator role) plus two supporting skills
+ * (medical_necessity, cost_sharing). See PORTFOLIO_SKILLS for the required 20.
+ */
 export const SKILLS = [
   "eob_reading",
   "claim_status",
@@ -72,33 +75,71 @@ export const SKILLS = [
   "prior_auth",
   "cpt",
   "icd10",
-  "medical_necessity",
   "denials",
+  "claim_correction",
   "appeals",
   "network_status",
   "member_responsibility",
-  "cost_sharing",
+  "allowed_amount",
   "balance_billing",
   "provider_communication",
+  "specialty_authorization",
+  "pharmacy_authorization",
+  "complex_investigation",
   "member_communication",
+  "inconsistency_detection",
+  "plain_english",
+  "medical_necessity",
+  "cost_sharing",
 ] as const;
 export const SkillSchema = z.enum(SKILLS);
 export type Skill = z.infer<typeof SkillSchema>;
 
 export const SKILL_LABELS: Record<Skill, string> = {
-  eob_reading: "Reading an EOB",
-  claim_status: "Claim status",
-  billing_reconciliation: "Bill vs. EOB reconciliation",
+  eob_reading: "EOB investigation",
+  claim_status: "Claims investigation",
+  billing_reconciliation: "Medical billing",
   prior_auth: "Prior authorization",
   cpt: "CPT concepts",
   icd10: "ICD-10 concepts",
-  medical_necessity: "Medical necessity",
-  denials: "Denials",
-  appeals: "Appeals",
-  network_status: "Network status",
+  denials: "Claim denials",
+  claim_correction: "Claim correction / reprocessing",
+  appeals: "Appeals (general concepts)",
+  network_status: "Network vs. out-of-network",
   member_responsibility: "Member responsibility",
-  cost_sharing: "Deductible / copay / coinsurance",
+  allowed_amount: "Allowed amount",
   balance_billing: "Balance billing",
-  provider_communication: "Provider communication",
+  provider_communication: "Provider/member/payer coordination",
+  specialty_authorization: "Specialty authorization",
+  pharmacy_authorization: "Pharmacy authorization",
+  complex_investigation: "Complex claim investigation",
   member_communication: "Member communication",
+  inconsistency_detection: "Identifying inconsistencies / errors",
+  plain_english: "Plain-English explanation",
+  medical_necessity: "Medical necessity",
+  cost_sharing: "Deductible / copay / coinsurance",
 };
+
+/** The 20 skills the portfolio must collectively cover. */
+export const PORTFOLIO_SKILLS: Skill[] = [
+  "eob_reading",
+  "claim_status",
+  "billing_reconciliation",
+  "prior_auth",
+  "cpt",
+  "icd10",
+  "denials",
+  "claim_correction",
+  "appeals",
+  "network_status",
+  "member_responsibility",
+  "allowed_amount",
+  "balance_billing",
+  "provider_communication",
+  "specialty_authorization",
+  "pharmacy_authorization",
+  "complex_investigation",
+  "member_communication",
+  "inconsistency_detection",
+  "plain_english",
+];

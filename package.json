@@ -11,7 +11,8 @@
     "typecheck": "tsc -b",
     "test": "vitest run",
     "test:watch": "vitest",
-    "kb:docs": "UPDATE_KB_DOCS=1 vitest run src/content/plan-knowledge"
+    "kb:docs": "UPDATE_KB_DOCS=1 vitest run src/content/plan-knowledge",
+    "portfolio:docs": "UPDATE_PORTFOLIO_DOCS=1 vitest run src/content/cases/portfolio"
   },
   "dependencies": {
     "react": "^19.3.0",

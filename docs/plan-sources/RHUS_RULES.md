@@ -9,7 +9,7 @@
 | `rhus-benefits-overview-2025-12-16` | Remote Health USA — Benefits overview | benefits_overview | RH USA benefits synopsis Full_2025-12-16 | https://safetywing.com/api/policy/113 | 2026-10-03 | `docs/plan-sources/rhus-benefits-overview-2025-12-16.extract.txt` |
 | `rhus-public-page-2026-10-03` | Remote Health USA public plan page | public_page | Live web page (no version string) | https://safetywing.com/remote-health-us | 2026-10-03 | `docs/plan-sources/rhus-public-page-2026-10-03.extract.txt` |
 
-Totals: 130 rules (9 need clarification), 65 benefit entries, 20 pre-authorization list items.
+Totals: 131 rules (9 need clarification), 65 benefit entries, 20 pre-authorization list items.
 
 ## plan_structure
 
@@ -615,6 +615,15 @@ Totals: 130 rules (9 need clarification), 65 benefit entries, 20 pre-authorizati
   > Administrative services Fees for claim forms, shipping, or handling aren't covered.
 - **Source:** Remote Health USA — Benefits overview (RH USA benefits synopsis Full_2025-12-16) · https://safetywing.com/api/policy/113 · page 13 · section "General plan exclusions" · accessed 2026-10-03
   > Missed appointments Fees for missed appointments aren't covered.
+
+### `rhus.excl.plan_maximums` · Plan maximums
+
+**Rule:** Costs above plan limits aren't covered.
+
+- **Status / confidence:** confirmed / high
+- **Source:** Remote Health USA — Benefits overview (RH USA benefits synopsis Full_2025-12-16) · https://safetywing.com/api/policy/113 · page 14 · section "General plan exclusions" · accessed 2026-10-03
+  > Plan maximums Costs above plan limits aren't covered.
+- **Note:** Applies to benefits with visit, day or dollar limits (e.g. acupuncture 20 visits, hearing aids up to $4,000).
 
 ### `rhus.excl.maintenance_therapy` · Maintenance therapy
 

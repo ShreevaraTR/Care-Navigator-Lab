@@ -33,6 +33,7 @@ export function CaseReviewPage() {
             <AttemptStatusBadge status={attempt.status} />
             <span>Started {formatDate(attempt.startedAt)}</span>
             {attempt.completedAt && <span>· Completed {formatDate(attempt.completedAt)}</span>}
+            <span>· Hints used: {attempt.hintsUsed.length}</span>
           </span>
         }
         actions={

@@ -69,6 +69,8 @@ export const AttemptSchema = z.object({
   completedAt: z.string().optional(),
   /** Free-form investigation notes taken while working the case. */
   investigationNotes: z.string(),
+  /** Task ids whose hint the trainee chose to reveal. */
+  hintsUsed: z.array(z.string()).default([]),
   answers: z.record(z.string(), AnswerSchema),
   criterionResults: z.record(z.string(), CriterionResultSchema),
   score: ScoreBreakdownSchema.optional(),

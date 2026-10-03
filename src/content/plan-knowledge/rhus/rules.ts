@@ -592,6 +592,16 @@ export const rhusRules: PlanRule[] = [
     confidence: "high",
   },
   {
+    id: "rhus.excl.plan_maximums",
+    section: "exclusions",
+    topic: "Plan maximums",
+    statement: "Costs above plan limits aren't covered.",
+    citations: [bo(14, "General plan exclusions", "Plan maximums Costs above plan limits aren't covered.")],
+    status: "confirmed",
+    confidence: "high",
+    note: "Applies to benefits with visit, day or dollar limits (e.g. acupuncture 20 visits, hearing aids up to $4,000).",
+  },
+  {
     id: "rhus.excl.maintenance_therapy",
     section: "exclusions",
     topic: "Maintenance therapy",

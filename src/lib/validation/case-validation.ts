@@ -33,7 +33,10 @@ export type IssueCode =
   | "ICD_AS_PROCEDURE"
   | "CODE_FORMAT"
   | "CODE_NOT_REFERENCED"
-  | "INVENTED_APPEALS_RULE";
+  | "INVENTED_APPEALS_RULE"
+  | "EOB_ARITHMETIC"
+  | "UNTESTED_DELIBERATE_ERROR"
+  | "PORTFOLIO_SHAPE";
 
 export interface ValidationIssue {
   code: IssueCode;
@@ -199,6 +202,7 @@ export function validateCaseContent(c: SimulationCase): ValidationIssue[] {
     else if (!diagnosisCodes.has(code)) add("CODE_NOT_REFERENCED", `${where}: diagnosis code "${code}" is not listed in case.codes as a diagnosis`);
   };
   for (const d of c.documents) {
+    if (d.deliberateErrors.length) continue; // planted errors are the point of the exercise
     if (d.type === "claim")
       d.lines.forEach((l, i) => {
         checkProcedure(`${d.id}.lines[${i}].code`, l.code);
@@ -249,6 +253,32 @@ export function validateCaseContent(c: SimulationCase): ValidationIssue[] {
       }
   }
 
+  // --- EOB arithmetic ----------------------------------------------------------
+  for (const e of eobs)
+    e.lines.forEach((l, i) => {
+      const costShare = l.deductible + l.copay + l.coinsurance;
+      if (l.allowed > 0 && l.planPaid + costShare + l.notCovered !== l.allowed)
+        add("EOB_ARITHMETIC", `${e.id}.lines[${i}]: plan paid + deductible + copay + coinsurance + not covered (${l.planPaid + costShare + l.notCovered}) ≠ allowed (${l.allowed})`);
+      if (l.memberResponsibility < costShare || l.memberResponsibility > costShare + l.notCovered + (l.allowed === 0 ? l.billed : 0))
+        add("EOB_ARITHMETIC", `${e.id}.lines[${i}]: member responsibility ${l.memberResponsibility} is inconsistent with the cost-share columns`);
+      if (l.allowed > l.billed) add("EOB_ARITHMETIC", `${e.id}.lines[${i}]: allowed exceeds billed`);
+    });
+
+  // --- Deliberate errors must be tested ----------------------------------------
+  const citedDocs = new Set(c.tasks.flatMap((t) => t.criteria.flatMap((cr) => cr.basis.filter((b) => b.kind === "case_fact").map((b) => (b as { documentId: string }).documentId))));
+  for (const d of c.documents)
+    if (d.deliberateErrors.length && !citedDocs.has(d.id))
+      add("UNTESTED_DELIBERATE_ERROR", `${d.id} has planted errors but no criterion cites it`);
+
+  // --- Portfolio cases ------------------------------------------------------------
+  if (!c.isSample) {
+    if (c.portfolioNumber === null) add("PORTFOLIO_SHAPE", "a non-sample case needs a portfolioNumber");
+    if (c.skills.length < 3 || c.skills.length > 8) add("PORTFOLIO_SHAPE", `portfolio cases should test 3–8 skills (has ${c.skills.length})`);
+    if (!c.tasks.some((t) => t.kind === "free_text")) add("PORTFOLIO_SHAPE", "every portfolio case needs a written investigation task");
+    if (!c.tasks.some((t) => t.kind === "member_response")) add("PORTFOLIO_SHAPE", "every portfolio case needs a member response task");
+    if (!c.scenario || !c.recordingPriority) add("PORTFOLIO_SHAPE", "portfolio cases need scenario and recordingPriority");
+  }
+
   // --- Plan consistency (Remote Health USA cases) -------------------------------
   if (isPlanCase) {
     for (const e of eobs)
@@ -268,15 +298,21 @@ export function validateCaseContent(c: SimulationCase): ValidationIssue[] {
         if (costShare && !oonContext && !NEGATION.test(s) && !/prescription|pharmacy|drug/i.test(s) && (inNetworkCase || /in[- ]network/i.test(s)))
           add("IN_NETWORK_COST_SHARE", `${where}: in-network cost sharing contradicts rhus.cost.in_network_no_cost_share: "${s}"`);
 
-        const inDed = /in[- ]network[^.]{0,30}deductible[^.]{0,20}?\$\s?([\d,]+)/i.exec(s);
-        if (inDed && dollars(inDed[1]) !== 0) add("CONTRADICTS_PLAN_RULE", `${where}: in-network deductible is $0 (rhus.cost.deductible.in_network): "${s}"`);
-        const oonDed = /out[- ]of[- ]network[^.]{0,30}deductible[^.]{0,20}?\$\s?([\d,]+)/i.exec(s);
-        if (oonDed && ![100000, 350000].includes(dollars(oonDed[1])))
+        // Amounts directly attached to a deductible: "in-network deductible is $X" or "$X in-network deductible".
+        const dedAmounts = (net: string) =>
+          [
+            ...s.matchAll(new RegExp(String.raw`${net}\s+(?:annual\s+)?deductible\s+(?:is|of|=|:)?\s*\$\s?([\d,]+)`, "gi")),
+            ...s.matchAll(new RegExp(String.raw`\$\s?([\d,]+)\s+(?:individual\s+|family\s+)?${net}\s+(?:annual\s+)?deductible`, "gi")),
+          ].map((m) => dollars(m[1]));
+        if (dedAmounts(String.raw`in[- ]network`).some((v) => v !== 0))
+          add("CONTRADICTS_PLAN_RULE", `${where}: in-network deductible is $0 (rhus.cost.deductible.in_network): "${s}"`);
+        if (dedAmounts(String.raw`out[- ]of[- ]network`).some((v) => ![100000, 350000].includes(v)))
           add("CONTRADICTS_PLAN_RULE", `${where}: out-of-network deductible is $1,000 / $3,500 (rhus.cost.deductible.out_of_network): "${s}"`);
         if (/pre-?auth|prior auth/i.test(s) && /penalt/i.test(s)) {
-          const pct = /(\d{1,2})\s?%/.exec(s);
-          const cap = /\$\s?([\d,]+)/.exec(s);
-          if ((pct && pct[1] !== "10") || (cap && dollars(cap[1]) !== 50000 && /up to|max|cap/i.test(s)))
+          // Any percentage stated alongside the penalty must include 10%; any cap stated must be $500.
+          const pcts = [...s.matchAll(/(\d{1,3})\s?%/g)].map((m) => m[1]);
+          const capWords = /\b(up to|max(imum)?|cap(ped)?)\b/i.test(s);
+          if ((pcts.length && !pcts.includes("10")) || (capWords && /\$/.test(s) && !/\$\s?500\b/.test(s)))
             add("CONTRADICTS_PLAN_RULE", `${where}: the pre-authorization penalty is 10% up to $500 (rhus.pa.penalty): "${s}"`);
         }
         // No appeals procedure exists in the knowledge base, so any plan-specific appeals rule is invented.

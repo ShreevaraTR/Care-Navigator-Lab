@@ -73,34 +73,13 @@ Text checks are heuristics over the case's own voice, so write plainly. If a cor
 - Any future AI grader must use `buildGraderBrief()` (`src/lib/grading/grader-brief.ts`). It receives **only** the case's declared plan rules (verbatim, with citations), declared concepts, case facts and rubric, plus explicit instructions never to state or confirm any other SafetyWing rule. A test enforces that undeclared rules never reach the grader.
 - Scoring: 100-point model (claims 20, EOB 20, CPT/ICD 15, prior auth 15, plan knowledge 10, problem solving 10, communication 10), normalised over the categories a case tests.
 
-## 6. Proposed 20-case blueprint (plan, not content)
+## 6. The 20-case portfolio
 
-Designed so that across 20 cases every skill is practised several times. **Bold** marks the hinge rule or concept. Slots marked ⏸ need the SPD first.
+The portfolio is built. See [`20_CASE_PORTFOLIO.md`](20_CASE_PORTFOLIO.md), which is generated from the case files (`npm run portfolio:docs`), for the case table, skill coverage, scoring-category exposure, prior-authorization situations and task mix. The appeals case is a `BLOCKED_PENDING_SPD` placeholder (`src/content/cases/portfolio/placeholders.ts`) until the SPD is sourced.
 
-| # | Working title | Primary competencies | Key knowledge |
-|---|---|---|---|
-| 1 | "Why am I being charged a copay?" | EOB vs bill, member responsibility | **rhus.cost.in_network_no_cost_share**, provider-statement |
-| 2 | Out-of-network specialist, first visit of the year | OON deductible, EOB math | **rhus.cost.deductible.out_of_network**, coinsurance.out_of_network |
-| 3 | The balance bill after an OON surgery | Allowed vs billed, balance billing, OOP | **rhus.cost.balance_billing**, oop.never_counts |
-| 4 | CT done without pre-authorization | Penalty math, accumulators | **rhus.pa.penalty**, pa.penalty_not_counted, pa.list.k |
-| 5 | Authorization expired before the date of service | Auth validity window | rhus.pa.list.*, **authorization-linking** |
-| 6 | Approved for CT, billed as MRI | CPT vs auth mismatch | **cpt**, rhus.pa.list.k |
-| 7 | Medical-necessity denial with a mismatched diagnosis | CPT/ICD mismatch, corrected claim | **coding-error**, rhus.structure.medical_necessity |
-| 8 | "Denied as duplicate: do I owe this?" | Claim status, duplicates | **duplicate-claim** |
-| 9 | Bill arrived while the claim is pending | Claim lifecycle, premature billing | **claim-statuses** |
-| 10 | Out-of-network ER visit at night | Emergency exception, notification | **rhus.benefit.emergency_services**, pa.emergency_notification |
-| 11 | Air ambulance after an accident | Limit + pre-auth for air/water | **rhus.benefit.ambulance_emergency** |
-| 12 | Pharmacy copay confusion (generic vs non-preferred vs mail order) | Pharmacy tiers | **rhus.rx.retail**, rx.mail_order |
-| 13 | Processed out-of-network, provider is in Cigna's network | Network verification, reprocessing | **rhus.structure.cigna_ppo_network**, claim-correction |
-| 14 | Home health started without authorization | Pre-auth responsibility, coordination | **rhus.benefit.home_health**, pa.member_must_confirm |
-| 15 | Fertility testing vs IVF | Covered vs excluded, explaining a "no" | **rhus.excl.infertility**, benefit.reproductive_underlying_cause |
-| 16 | Part-time employee asks why a claim was denied | Eligibility | **rhus.eligibility.full_time_only**, excl.coverage_dates |
-| 17 | Second hearing aid within 48 months | Benefit limits | **rhus.benefit.hearing_aids** |
-| 18 | Physical therapy after maximum improvement | Exclusions vs benefit | **rhus.excl.maintenance_therapy**, benefit.physical_therapy |
-| 19 ⏸ | Medical-necessity appeal | Appeal vs correction, documentation | appeal concept + SPD appeals rules (to be sourced) |
-| 20 | Full Care Navigator case: multi-issue hospitalisation | Everything: auth, network, EOB vs bill, coding, communication | Several |
+Authoring helpers live in `src/content/cases/portfolio/helpers.ts` (`choice`, `selectAll`, `amount`, `investigation`, `memberReply`, `knownVsUnknown`, `planRulesDoc`, `knowledge`, `eobLine`, code builders). `portfolio.test.ts` enforces numbering, the difficulty progression, 3–8 skills per case, a mixed task set, ≥2 cases per portfolio skill, and that every case scores exactly 100 with perfect answers.
 
-Before writing, check coverage with the skills/case-type tags and adjust so no skill appears fewer than 4 times.
+Additional validation added in Phase 3: `EOB_ARITHMETIC` (allowed = plan paid + cost share + not covered), `UNTESTED_DELIBERATE_ERROR` (planted document errors must be cited by a criterion), and `PORTFOLIO_SHAPE`.
 
 ## 7. Definition of done for a case
 

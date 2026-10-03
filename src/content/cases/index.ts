@@ -1,9 +1,10 @@
 import { CaseSchema, type SimulationCase, type SimulationCaseInput } from "@/domain/case";
 import { validateCaseContent } from "@/lib/validation/case-validation";
 import { sample01MriBill } from "./sample-01-mri-bill";
+import { portfolioCases } from "./portfolio";
 
 /** Register new cases here. Each is schema-checked and content-validated at load time. */
-const rawCases: SimulationCaseInput[] = [sample01MriBill];
+const rawCases: SimulationCaseInput[] = [sample01MriBill, ...portfolioCases];
 
 export class CaseValidationError extends Error {
   constructor(

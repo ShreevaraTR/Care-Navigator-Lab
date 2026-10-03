@@ -47,6 +47,12 @@ const DocumentBase = z.object({
   id: z.string(),
   title: z.string(),
   provenance: ProvenanceSchema,
+  /**
+   * Errors planted in this document on purpose (e.g. a CPT code typed into a diagnosis field),
+   * described for authors. Structural code checks are relaxed for such documents, and at least
+   * one criterion must cite the document so the error is actually tested.
+   */
+  deliberateErrors: z.array(z.string()).default([]),
 });
 
 export const EobLineSchema = z.object({
@@ -244,7 +250,10 @@ export const CaseSchema = z
     code: z.string(),
     title: z.string(),
     summary: z.string(),
-    difficulty: z.enum(["foundation", "intermediate", "advanced"]),
+    difficulty: z.enum(["foundation", "intermediate", "intermediate_plus", "advanced", "complex", "capstone"]),
+    /** One-line scenario for the portfolio table. */
+    scenario: z.string().optional(),
+    recordingPriority: z.enum(["high", "medium", "low"]).optional(),
     status: z.enum(["draft", "ready"]),
     /** Sample cases use a fictional plan and exist to exercise the app. */
     isSample: z.boolean(),

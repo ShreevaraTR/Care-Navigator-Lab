@@ -6,7 +6,7 @@ Each case is a realistic member ticket with an evidence packet (claim, EOB, prov
 
 > **Educational simulation only.** Completing cases here does not make anyone a certified coder, claims professional, or insurance professional. Plan-specific content comes only from official Remote Health USA material, cited page by page (see [Accuracy rules](#accuracy-rules)).
 
-**Docs:** [Remote Health USA knowledge base](docs/REMOTE_HEALTH_US_KNOWLEDGE_BASE.md) · [Case authoring guide](docs/CASE_AUTHORING_GUIDE.md) · [Plan rules register](docs/plan-sources/RHUS_RULES.md)
+**Docs:** [20-case portfolio](docs/20_CASE_PORTFOLIO.md) · [Remote Health USA knowledge base](docs/REMOTE_HEALTH_US_KNOWLEDGE_BASE.md) · [Case authoring guide](docs/CASE_AUTHORING_GUIDE.md) · [Plan rules register](docs/plan-sources/RHUS_RULES.md)
 
 ## Running locally
 
@@ -18,7 +18,8 @@ npm run dev        # http://localhost:5173
 npm test           # scoring, case validation, knowledge-base quote verification, lessons
 npm run typecheck  # TypeScript (app + tests)
 npm run build      # typecheck + production build
-npm run kb:docs    # regenerate docs/plan-sources/RHUS_RULES.md after editing plan rules
+npm run kb:docs        # regenerate docs/plan-sources/RHUS_RULES.md after editing plan rules
+npm run portfolio:docs # regenerate docs/20_CASE_PORTFOLIO.md after editing cases
 ```
 
 Attempts are saved in your browser's localStorage. To back them up, use **Case History → Export all (JSON)**, or export each completed case as a Markdown portfolio record.
