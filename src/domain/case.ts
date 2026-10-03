@@ -51,6 +51,8 @@ const DocumentBase = z.object({
 
 export const EobLineSchema = z.object({
   dateOfService: IsoDate,
+  /** Plan benefit this line falls under (plan knowledge-base key). Enables plan-consistency checks. */
+  benefitKey: z.string().optional(),
   service: z.string(),
   code: z.string().optional(),
   billed: Cents,
@@ -125,14 +127,23 @@ export const AuthorizationDocumentSchema = DocumentBase.extend({
   validFrom: IsoDate.optional(),
   validTo: IsoDate.optional(),
   notes: z.string().optional(),
+  /**
+   * What the case asserts about whether pre-authorization is required for this service.
+   * Checked against the plan knowledge base for plan cases.
+   */
+  requirement: z.object({ benefitKey: z.string(), required: z.boolean() }).optional(),
 });
 
 export const BenefitSummaryDocumentSchema = DocumentBase.extend({
   type: z.literal("benefit_summary"),
   planName: z.string(),
-  /** True for fictional training plans. Must be false only when every item cites a plan source. */
+  /** True for fictional training plans. Plan (non-fictional) summaries may only contain plan rules. */
   isSimulatedPlan: z.boolean(),
-  items: z.array(z.object({ label: z.string(), value: z.string(), provenance: ProvenanceSchema })),
+  /**
+   * For plan rules, give `ruleId` and omit `value`: the text is taken from the knowledge base, so a
+   * case can never restate a rule differently. Free-text `value` is only for fictional plans.
+   */
+  items: z.array(z.object({ label: z.string(), value: z.string().optional(), ruleId: z.string().optional(), provenance: ProvenanceSchema })),
 });
 
 /** Free-form record: call log, clinical note excerpt, letter, chat transcript… */
@@ -176,8 +187,21 @@ export const CriterionGradingSchema = z.discriminatedUnion("mode", [
 ]);
 export type CriterionGrading = z.infer<typeof CriterionGradingSchema>;
 
+/**
+ * What makes a criterion's expected answer true. Every criterion needs at least one basis, so that
+ * every answer is explainable from a cited plan rule, a general concept, or a stated case fact.
+ */
+export const BasisSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("plan_rule"), ruleId: z.string() }),
+  z.object({ kind: z.literal("general_concept"), conceptId: z.string() }),
+  z.object({ kind: z.literal("case_fact"), documentId: z.string() }),
+  z.object({ kind: z.literal("assumption"), assumptionIndex: z.number().int().nonnegative() }),
+]);
+export type Basis = z.infer<typeof BasisSchema>;
+
 export const RubricCriterionSchema = z.object({
   id: z.string(),
+  basis: z.array(BasisSchema).min(1),
   category: ScoringCategorySchema,
   points: z.number().positive(),
   /** What a strong answer demonstrates. Shown in review. */
@@ -198,6 +222,8 @@ export const TaskSchema = z.object({
   prompt: z.string(),
   hint: z.string().optional(),
   options: z.array(z.object({ id: z.string(), label: z.string() })).optional(),
+  /** Declares what an amount task measures, so validation can check it against the documents. */
+  measures: z.enum(["eob_member_responsibility"]).optional(),
   criteria: z.array(RubricCriterionSchema).min(1),
   /** Model answer / correct reasoning for this task, shown in review. */
   modelAnswer: z.string(),
@@ -230,7 +256,18 @@ export const CaseSchema = z
       memberMessage: z.string(),
     }),
     member: z.object({ name: z.string(), memberId: z.string(), details: z.string().optional() }),
-    plan: z.object({ name: z.string(), isSimulated: z.boolean(), provenance: ProvenanceSchema }),
+    /**
+     * "rhus": the case is set on Remote Health USA and is checked against the plan knowledge base.
+     * "fictional": an invented plan. It may not be named or presented as SafetyWing / Remote Health.
+     */
+    plan: z.object({ planId: z.enum(["rhus", "fictional"]), name: z.string(), provenance: ProvenanceSchema }),
+    /** Knowledge the case tests. Every plan rule / concept used as a basis must be declared here. */
+    knowledge: z.object({
+      planRules: z.array(z.string()).default([]),
+      generalConcepts: z.array(z.string()).default([]),
+      /** needs_clarification rules the case deliberately relies on, with an assumption covering them. */
+      acknowledgedUnclearRules: z.array(z.string()).default([]),
+    }),
     provider: z.object({ name: z.string(), type: z.string(), networkStatus: NetworkStatusSchema }),
     codes: z.array(CodeReferenceSchema).default([]),
     documents: z.array(CaseDocumentSchema).min(1),
@@ -264,8 +301,6 @@ export const CaseSchema = z
       if ((t.kind === "single_choice" || t.kind === "multi_choice") && !t.options?.length)
         ctx.addIssue({ code: "custom", message: `${t.id}: choice task needs options` });
     }
-    if (!c.isSample && c.plan.isSimulated === false && c.plan.provenance.kind !== "plan_rule")
-      ctx.addIssue({ code: "custom", message: "a real plan must cite an authoritative plan source" });
   });
 export type SimulationCase = z.infer<typeof CaseSchema>;
 export type SimulationCaseInput = z.input<typeof CaseSchema>;

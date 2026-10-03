@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "typecheck": "tsc -b",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "kb:docs": "UPDATE_KB_DOCS=1 vitest run src/content/plan-knowledge"
   },
   "dependencies": {
     "react": "^19.3.0",

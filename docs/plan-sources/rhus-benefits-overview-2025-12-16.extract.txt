@@ -1,0 +1,770 @@
+SOURCE EXTRACT — for verification only. Not edited. Page markers added.
+Source id:      rhus-benefits-overview-2025-12-16
+Title:          Remote Health USA — Benefits overview
+PDF title:      RH USA benefits synopsis Full_2025-12-16
+Publisher:      SafetyWing
+URL:            https://safetywing.com/api/policy/113
+Pages:          21 (US Letter). PDF created 2025-12-16.
+SHA-256 (PDF):  077a86d39535d55e507fc706b232929059ce328245bdd45c8c4b253d7591cf04
+Accessed:       2026-10-03
+Extraction:     pdftotext -layout, one page at a time; trailing whitespace trimmed, blank lines squeezed.
+Note:           Two-column layout means some row labels and notes sit on separate lines. Read rows carefully;
+                where a note's scope is ambiguous, the structured rule is marked needs_clarification.
+
+=================== PAGE 1
+           USA
+
+Benefits overview
+=================== PAGE 2
+                        USA                              Benefits overview                                             PAGE 2 OF 21
+
+Benefits summary              Pre-authorization requirements                         General plan exclusions                        Add-ons
+
+      Plan basics
+      This guide is a detailed, readable summary of what your plan covers, what’s excluded, and
+      what may need pre-authorization.
+
+                                                                                   In network                   Out of network
+
+      Lifetime coverage limit                                                      Unlimited                      Unlimited
+
+      Annual coverage limit                                                        Unlimited                      Unlimited
+
+                                                            Individual                 $0                          $1,000
+      Annual deductible
+
+                                                            Family                     $0                          $3,500
+
+        •   No person can be required to pay more than their individual deductible amount. Each family member contributes
+            toward the family deductible until it’s met.
+        •   Deductible amounts for in-network and out-of-network care are tracked separately and don’t count toward
+            each other.
+        •   Your medical and pharmacy expenses both count towards the same deductible.
+
+                                                            Single                   $1,000                        $2,000
+      Out-of-pocket limit
+
+                                                            Family                  $3,000                         $7,000
+
+        Your out-of-pocket limit includes everything you pay: deductibles, coinsurance, and copays (for both medical and
+        pharmacy). Your plan pays a set percentage of covered costs until you reach your out-of-pocket limit. After that, it pays
+        100% of covered costs for the rest of the year.
+
+        •   For this plan, the only expenses that contribute to your in-network out-of-pocket limit are prescription co-pays or a
+            non-emergency ambulance.
+        •   In-network and out-of-network out-of-pocket limits are tracked separately.
+        •   Some charges never count toward your limit and are never covered at 100%:
+              ▪    Out-of-network charges above what the plan agrees to pay
+              ▪    Services not covered (including pre-authorization penalties)
+=================== PAGE 3
+                            USA                               Benefits overview                                             PAGE 3 OF 21
+
+Benefits summary                  Pre-authorization requirements                           General plan exclusions                    Add-ons
+
+      In case of emergency
+
+                                                                                         In network                  Out of network
+
+      Emergency services
+
+           For emergency medical condition                                                 100%                          100%
+                                                                                  Pre-authorization required (see pre-authorization
+                                                                                  section for details)
+
+           For non-emergency medical condition                                             100%                 70% after deductible
+                                                                                  Pre-authorization required
+
+       Emergency ambulance                                                                 100%                          100%
+                                                                                  Up to $25,000 for each air/water ambulance ride,
+                                                                                  pre-authorization required
+
+       Non-emergency ambulance                                                          Not covered                   Not covered
+       Water, air, ground                                                         Except as covered under emergency ambulance
+
+       Urgent care facility                                                                100%                 70% after deductible
+                                                                                  Pre-authorization required
+
+      Hospital charges
+
+                                                                                         In network                  Out of network
+
+      Semi-private room when hospitalized                                                  100%                 70% after deductible
+       A private room is covered only if it’s medically                           Pre-authorization required
+       necessary. If the hospital only has private rooms,
+       coverage is limited to the lowest private room rate.
+
+       Physicianʼs services                                                                100%                 70% after deductible
+=================== PAGE 4
+                          USA                   Benefits overview                                            PAGE 4 OF 21
+
+Benefits summary                Pre-authorization requirements               General plan exclusions                    Add-ons
+
+                                                                           In network                  Out of network
+
+       Intensive care unit                                                   100%                 70% after deductible
+       This plan pays the ICU rate                                  Pre-authorization required
+
+      Surgery                                                                100%                 70% after deductible
+                                                                    Pre-authorization required
+
+      Oncology services                                                      100%                 70% after deductible
+      (e.g., chemotherapy, radiation                                Pre-authorization required
+      therapy, cancer-related surgery)
+
+      Injections                                                             100%                 70% after deductible
+                                                                    Pre-authorization required for pain programs
+
+      Day surgery                                                            100%                 70% after deductible
+                                                                    Pre-authorization required
+
+      Oral surgery                                                           100%                 70% after deductible
+                                                                    Pre-authorization required
+
+      Extraction of impacted wisdom teeth                                    100%                 70% after deductible
+                                                                    Pre-authorization required
+
+      Endoscopic tests (non-routine)                                         100%                 70% after deductible
+                                                                    Pre-authorization required
+
+      Second surgical opinion                                                100%                 70% after deductible
+
+      All other services & supplies                                          100%                 70% after deductible
+=================== PAGE 5
+                          USA                   Benefits overview                                         PAGE 5 OF 21
+
+Benefits summary                Pre-authorization requirements               General plan exclusions                 Add-ons
+
+      Doctors and specialists
+                                                                           In network               Out of network
+
+       Primary care doctor (PCP) visit                                       100%                70% after deductible
+
+      Specialist doctor visit                                                100%                70% after deductible
+
+      Walk-in clinic                                                         100%                70% after deductible
+
+       Private duty nursing (outpatient)                                     100%                70% after deductible
+       60 visits a year                                             Pre-authorization required
+
+       Diagnostic testing                                                    100%                70% after deductible
+      (X-ray, MRI, CT, PET scans, labs)                             Pre-authorization required
+
+       Genetic testing                                                       100%                70% after deductible
+       (e.g., BRACA, BART)                                          Pre-authorization required
+
+       Allergy testing                                                       100%                70% after deductible
+      1 testing (based on provider type)
+
+       Hearing examination                                                   100%                70% after deductible
+      1 exam
+
+       Routine eye exam                                                      100%                70% after deductible
+      1 exam
+=================== PAGE 6
+                            USA                      Benefits overview                                         PAGE 6 OF 21
+
+Benefits summary                  Pre-authorization requirements                   General plan exclusions                Add-ons
+
+      Preventive care
+                                                                                 In network              Out of network
+
+       Routine care (birth through adulthood)                                      100%               70% after deductible
+
+       Immunizations                                                               100%               70% after deductible
+
+       Screenings                                                                  100%               70% after deductible
+
+      Specialty support
+                                                                                 In network              Out of network
+
+       Mental and substance use disorders                                          100%               70% after deductible
+       While hospitalized, office or virtual visit                       Pre-authorization required
+
+       Physical, speech and occupational therapies                                 100%               70% after deductible
+                                                                         Including virtual visits
+
+       Home health care                                                            100%               70% after deductible
+                                                                         Pre-authorization required
+
+       Skilled nursing facility and rehabilitation                                 100%               70% after deductible
+       120 days per 12 month period                                      Pre-authorization required
+
+       Hospice care                                                                100%               70% after deductible
+       Lifetime maximum benefit of 180 days                              Pre-authorization required
+
+       Dialysis                                                                    100%               70% after deductible
+                                                                         Pre-authorization required
+
+       Cardiac rehab visits                                                        100%               70% after deductible
+       Single 12-week period, max 36 sessions
+=================== PAGE 7
+                        USA                              Benefits overview                                              PAGE 7 OF 21
+
+Benefits summary              Pre-authorization requirements                           General plan exclusions                     Add-ons
+
+                                                                                     In network                  Out of network
+
+      Pulmonary therapy (outpatient)                                                   100%                 70% after deductible
+      Inpatient pulmonary therapy covered under                              Covered for a single 6-week period, up to 36 visits
+      hospital charges
+
+      Temporomandibular joint dysfunction                                              100%                 70% after deductible
+                                                                             Up to $2,000
+
+      Transplants                                                                      100%                 70% after deductible
+      Cornea transplants performed by any provider are
+      covered under the plan as a separate benefit and                       Pre-authorization required
+      paid the same as any other illness
+
+       Hyperbaric oxygen treatments                                                    100%                 70% after deductible
+                                                                             Pre-authorization required
+
+       Infusion services                                                               100%                 70% after deductible
+                                                                             Pre-authorization required
+
+      Supplies and equipment
+                                                                                    In network                   Out of network
+
+       Durable medical equipment                                                       100%                 70% after deductible
+                                                                             Pre-authorization required
+
+      Hearing aids and related supplies                                                100%                 70% after deductible
+      One hearing aid per ear every 48 months                                Up to $4,000
+
+       Prosthetics                                                                     100%                 70% after deductible
+                                                                             Pre-authorization required
+
+      Diabetic education and supplies                                                  100%                 70% after deductible
+      Includes preventive and non-preventive                                 Pre-authorization required for insulin pumps
+      education and supplies
+=================== PAGE 8
+                         USA                        Benefits overview                          PAGE 8 OF 21
+
+Benefits summary               Pre-authorization requirements             General plan exclusions         Add-ons
+
+      Reproductive health
+                                                                         In network      Out of network
+
+      Testing, diagnosis and treatment                                     100%       70% after deductible
+      of underlying cause
+
+      Infertility treatment and procedures                              Not covered       Not covered
+
+      Contraceptive management                                             100%       70% after deductible
+      Deductible waived for preventive (per law).
+      OTC contraceptives not covered
+
+      Maternity care
+                                                                         In network      Out of network
+
+      Preventive prenatal                                                  100%       70% after deductible
+      and breastfeeding support
+
+      Lactation consultations                                              100%       70% after deductible
+
+      All other prenatal and postnatal care                                100%       70% after deductible
+
+      Delivery                                                             100%       70% after deductible
+
+      Wellness therapies
+                                                                         In network      Out of network
+
+       Acupuncture                                                         100%       70% after deductible
+       20 visits
+
+       Chiropractic care/spinal manipulation                               100%       70% after deductible
+       20 visits
+=================== PAGE 9
+                   USA                     Benefits overview                          PAGE 9 OF 21
+
+Benefits summary         Pre-authorization requirements          General plan exclusions         Add-ons
+
+      All other eligible medical expenses
+                                                               In network       Out of network
+
+                                                                 100%        70% after deductible
+
+      Drug type
+
+                                                                 Copay              Notes
+      Retail pharmacy: 30-day supply
+
+         Generic drug                                             $10           No deductible
+
+         Brand name drug (preferred)                             $30            No deductible
+
+         Brand name drug (non-preferred)                         $50            No deductible
+
+         Preventive drug                                       No charge     As classified by HHS
+
+      Mail order pharmacy: 90-day supply
+
+         Generic drug                                            $10            No deductible
+
+         Brand name drug                                         $30            No deductible
+
+         Non-preferred drug                                      $50            No deductible
+
+      Specialty drugs: 30-day supply                             $50            No deductible
+=================== PAGE 10
+                       USA                     Benefits overview                                       PAGE 10 OF 21
+
+Benefits summary             Pre-authorization requirements                General plan exclusions               Add-ons
+
+       In most cases, your in-network provider will request pre-authorization on your behalf,
+       especially for hospital stays or surgeries. Some providers may refer to this process as
+       “pre-certification.ˮ
+
+       It is your responsibility to confirm a treatment has been pre-authorized. If it isnʼt obtained
+       for whatever reason, you may have to pay 10% of the cost, up to $500.
+
+       To avoid this penalty, be sure to double-check that pre-authorization has been requested
+       before care begins.
+
+       Instructions:                                       Services requiring pre-authorization:
+       •   Check that your provider has obtained or        A.      Inpatient admissions (hospital, rehab, skilled
+           is obtaining pre-authorization for you. If              nursing, extended care, mental health/substance
+                                                                   use disorder)
+           not, ensure that they start the process as
+                                                           B.      Transplants
+           soon as possible. Get in touch with our         C.      Hospital stays over 48 hours
+           customer service for any assistance.            D.      Dialysis
+                                                           E.      Chemotherapy, radiation therapy
+       •   If you have an emergency admission for
+                                                           F.      Reconstructive or spinal surgery
+           any of the services below, call 1 (800)         G.      Hyperbaric oxygen treatments
+           337-0792 (toll free) within 24 hours of         H.      Durable medical equipment (over 30-day rental or
+           the admission. On the weekend or a                      purchase) and insulin pumps
+           holiday, call within 72 hours by the            I.      Substance use disorder programs (outpatient)
+                                                           J.      Outpatient surgery, procedures, or private duty
+           following Monday.
+                                                                   nursing
+       •   If pre-authorization isn’t done, the plan       K.      Diagnostic testing (MRI/PET/CT)
+           reduces covered charges by 10% (up to           L.      Infusion services
+                                                           M.      Home health care
+           $500). This penalty does not count
+                                                           N.      Genetic testing (e.g., BRACA, BART)
+           toward your deductible or
+                                                           O.      Air/water ambulance
+           out-of-pocket maximum.                          P.      Hospice care
+                                                           Q.      Prosthetics
+                                                           R.      Injection therapy for pain programs
+                                                           S.      Treatment/surgery for morbid obesity
+                                                           T.      Gender dysphoria surgical treatment
+=================== PAGE 11
+                         USA                           Benefits overview                                        PAGE 11 OF 21
+
+Benefits summary               Pre-authorization requirements                    General plan exclusions                   Add-ons
+
+       Like all major U.S. employer health plans, this one is designed to cover care that is
+       medically necessary for illness, injury, and prevention. It follows the same federal
+       standards (ACA / ERISA) that most corporate plans use.
+
+       That means everyday doctor visits, emergencies, hospital care, prescriptions, and
+       approved therapies are covered but cosmetic procedures, experimental treatments,
+       lifestyle services (like massage or fitness programs), or items for comfort or convenience
+       usually are not.
+
+       If youʼre unsure whether something qualifies, just ask. Weʼre here to help before you
+       book care.
+
+       Note: the exclusions are only briefly listed here and do not include full details. For the complete list of
+       non-covered services and specific limitations, please refer to your Summary Plan Description (SPD).
+
+       Abortion                                 Only abortions for spontaneous miscarriage complications, to prevent the
+                                                woman’s death, or from reported rape or incest are covered.
+
+       Allergy services                         Non-standard allergy tests, home-based treatments, or non-prescription
+                                                allergy drugs aren’t covered.
+
+       Administrative services                  Fees for claim forms, shipping, or handling aren’t covered.
+
+       Adoption                                 Adoption-related costs aren’t covered.
+
+       After coverage ends                      Care received after your coverage terminates isn’t covered.
+
+       Alternative therapies                    Non-medical treatments like aromatherapy, hair analysis, or hyperbaric
+                                                therapy (unless for decompression or wound healing) aren’t covered.
+
+       Biofeedback                              Biofeedback or bioenergetic treatments aren’t covered.
+
+       Cardiac rehab (Phase III)                Maintenance-level (Phase III) cardiac rehab or exercise programs after
+                                                recovery aren’t covered.
+=================== PAGE 12
+                     USA                     Benefits overview                                       PAGE 12 OF 21
+
+Benefits summary           Pre-authorization requirements              General plan exclusions                   Add-ons
+
+       Chelation therapy              Covered only for heavy metal poisoning.
+
+       Complications                  Issues resulting from non-covered treatments aren’t covered.
+
+       Convenience items              Comfort or personal items (like TVs, internet, or cleaning services)
+                                      aren’t covered.
+
+       Cosmetic procedures            Cosmetic surgeries like facelifts, implants, or tattoo removal aren’t covered
+
+       Custodial care                 Daily living or non-medical care isn’t covered except under hospice or
+                                      home health benefits.
+
+       Dental care                    Dental work isn’t covered unless related to a covered medical procedure.
+
+       Developmental delays           Therapy for developmental delays isn’t covered unless part of a
+                                      diagnosed mental health condition or preventive care.
+
+       Exercise programs              Fitness or training programs aren’t covered.
+
+       Excess charges                 You may be billed the difference directly if you visit an out-of-network
+                                      provider and they charge more than what the plan covers.
+
+       Experimental care              Experimental or unproven treatments, devices, or drugs aren’t covered.
+
+       Foot care                      Routine foot care isn’t covered except for diabetes or vascular conditions.
+
+       Foot orthotics                 Orthopedic shoes or arch supports aren’t covered unless part of a leg
+                                      brace or to treat/prevent diabetes complications.
+
+       Gender dysphoria               Cosmetic or non-medically necessary transition procedures aren’t covered.
+
+       Government services            Care provided free by a government program isn’t covered.
+
+       Growth/height                  Treatments or drugs used solely to change height aren’t covered.
+=================== PAGE 13
+                       USA                     Benefits overview                                        PAGE 13 OF 21
+
+Benefits summary             Pre-authorization requirements              General plan exclusions                    Add-ons
+
+       Hair loss                        Hair restoration or transplants aren’t covered.
+
+       Hazardous activities             Injuries from risky recreational activities aren’t covered unless due to
+                                        medical conditions or domestic violence.
+
+       Home and mobility                Modifications to your home, vehicle, or workplace (like ramps or air
+                                        purifiers) aren’t covered.
+
+       Home births                      Births at home or unlicensed locations aren’t covered unless approved as
+                                        lower cost.
+
+       Homeopathic treatments           Naturopathic or homeopathic care isn’t covered unless approved as
+                                        lower cost.
+
+       Hypnotherapy                     Only covered if used as anesthesia when standard anesthesia can’t be
+                                        used in a covered surgery.
+
+       Illegal acts                     Injuries from illegal acts aren’t covered, except for victims of domestic
+                                        violence or medical conditions.
+
+       Infertility                      Treatments like IVF, donor eggs, or surrogacy aren’t covered unless
+                                        specifically listed.
+
+       Immunizations                    Vaccines for work or travel aren’t covered (preventive vaccines are).
+
+       Maintenance therapy              Ongoing therapy after the maximum level of improvement is reached
+                                        isn’t covered.
+
+       Mandible treatment               Jaw surgeries for bite or shape correction aren’t covered.
+
+       Massage therapy                  Massage or rolfing isn’t covered.
+
+       Medical error                    Care required due to preventable medical mistakes isn’t covered.
+
+       Medically necessary              Services not medically necessary aren’t covered.
+
+       Missed appointments              Fees for missed appointments aren’t covered.
+=================== PAGE 14
+                     USA                     Benefits overview                                        PAGE 14 OF 21
+
+Benefits summary           Pre-authorization requirements               General plan exclusions               Add-ons
+
+       No legal obligation            Services you don’t have to pay for aren’t covered.
+
+       Not specified as covered       Any service not listed as covered in the plan isn’t eligible.
+
+       Not performed under the        Services not ordered or supervised by a physician aren’t covered.
+       direction of a physician
+
+       Not recommended by             Hospital stays not recommended by a doctor aren’t covered.
+       a physician
+
+       Nutritional supplements        Nutritional or infant supplements aren’t covered unless specified as
+                                      eligible medical expenses.
+
+       Government facilities          Care at government hospitals isn’t covered unless you’re required to pay.
+
+       Outside the U.S.               Medical travel abroad isn’t covered unless preapproved as lower cost.
+
+       Over-the-counter               OTC drugs and disposable supplies (like bandages or syringes)
+       medication and supplies        aren’t covered.
+
+       Plan maximums                  Costs above plan limits aren’t covered.
+
+       Pregnancy (dependent)          A dependent child’s newborn isn’t covered unless the baby qualifies as
+                                      an eligible dependent.
+
+       Prior to effective date        Care received before your coverage begins isn’t covered.
+
+       Radioactive contamination      Injuries from nuclear materials aren’t covered.
+
+       Recreational or educational    Non-medical therapies like music or pool therapy aren’t covered unless for
+       therapy                        mental health.
+
+       Refractive errors              Vision correction surgeries (like LASIK) aren’t covered.
+
+       Required by law                Costs that should be covered by legally required insurance (like auto
+                                      insurance) aren’t covered.
+=================== PAGE 15
+                         USA                              Benefits overview                                             PAGE 15 OF 21
+
+Benefits summary               Pre-authorization requirements                        General plan exclusions                    Add-ons
+
+       Riot or revolt                             Injuries from riots aren’t covered unless due to domestic violence or
+                                                  medical conditions.
+
+       Stand-by physician                         Fees for on-call or stand-by doctors aren’t covered.
+
+       Sterilization                              Elective sterilization or reversal isn’t covered unless preventive.
+
+       Strength and                               Treatments to enhance strength or athletic ability aren’t covered.
+       performance
+
+       Surrogacy                                  Pregnancy costs for surrogates aren’t covered unless preventive.
+
+       Travel and lodging                         Travel or lodging for medical care isn’t covered unless preapproved.
+
+       Vision care                                Vision exams, glasses, and contacts aren’t covered except after
+                                                  eye surgery.
+
+       Wage or profit                             Injuries or illnesses that arise out of employment or self-employment are
+                                                  not covered.
+
+       War                                        Injuries or illness from war or terrorism aren’t covered.
+
+       Weekend admissions                         Non-emergency weekend admissions aren’t covered unless surgery is
+                                                  within 24 hours.
+
+       Workerʼs compensation                      Injuries covered by workers’ compensation or similar laws aren’t covered.
+
+       Still have questions?
+       We're here to help. Get in touch with us via 24/7 live chat on safetywing.com or email support@safetywing.com.
+
+       This document reflects the coverage in the official Summary Plan Document (SPD) in a friendlier format. See an example SPD.
+=================== PAGE 16
+                           USA                         Benefits overview                                           PAGE 16 OF 21
+
+Benefits summary                 Pre-authorization requirements                      General plan exclusions                  Add-ons
+
+       The add-ons listed below are only available if your employer allowed you to select them
+       during open enrollment. Add-on coverage may vary between you and your family members.
+
+       Dental benefits overview
+                                                                                  In network                 Out of network
+
+       Annual limit                                                                $5,000                        $5,000
+       Combined for both; after $5,000, no further
+       benefits for Out of network
+
+       Deductible                                                                       $0                        $0
+
+       Annual limit for orthodontics                                               $2,500                        $2,500
+       Only for dependent children under age 20 when
+       treatment begins, paid in installments
+
+       Deductible for orthodontics                                                      $0                        $0
+       Applies after deductible is met
+
+       Dental emergency (per incident)                                          Up to $5,000                 Up to $5,000
+                                                                           Included as part of overall maximum
+
+       Covered services
+
+       Preventive and diagnostic
+
+           Oral exams & cleanings                                          1 every 6 months
+
+           Bitewing x-rays                                                 1 per year
+
+           Full-mouth x-ray                                                1 every 36 months
+
+           Fluoride treatment                                              1 per year (under age 19)
+
+           Space maintainers                                               Covered for children under 16
+
+           Sealants                                                        1 per tooth every 3 years (under age 19)
+
+           Emergency treatment for pain                                    Covered
+=================== PAGE 17
+                     USA                        Benefits overview                                       PAGE 17 OF 21
+
+Benefits summary           Pre-authorization requirements                     General plan exclusions               Add-ons
+
+       Basic restorative
+
+          Fillings (amalgam, composite)                             Covered
+
+          Simple & surgical extractions                             Covered
+
+          Periodontics (surgical & non-surgical)                    Covered
+
+          Periodontal maintenance                                   2 per year after treatment
+
+          Root canals, pulpal therapy                               Covered
+
+          Oral surgery (except TMJ)                                 Covered
+
+          Stainless steel crowns                                    Covered (under 16)
+
+          Repair/re-cementing crowns, bridges, inlays               Covered
+
+          Anesthetics (if medically necessary)                      Covered
+
+          Antibiotic injections                                     Covered
+
+       Major restorative
+
+          Crowns, inlays, onlays, veneers                           Covered if tooth cannot be restored otherwise
+
+          Gold restorations                                         Only if medically necessary, otherwise
+                                                                    covered at amalgam/composite rate
+
+          Dentures (partial, full, removable)                       Covered, incl. adjustments within 6 months
+
+          Repairs, clasp additions, re-cementing                    Covered
+
+          Rebasing/relines of dentures                              Covered
+
+          Prosthodontics                                            Covered
+          (bridges, dentures, fixed bridgework)
+
+          Replacement of dentures/bridges                           Covered after 5 years (exceptions apply)
+
+          Periodontal splinting                                     Covered
+
+          Implants (endosteal)                                      Covered
+=================== PAGE 18
+                        USA                     Benefits overview                                          PAGE 18 OF 21
+
+Benefits summary              Pre-authorization requirements                  General plan exclusions                Add-ons
+
+       Orthodontic services
+
+          Preliminary study (x-rays,                                Covered
+          casts, treatment plan)
+
+          Active treatment                                          Covered
+
+          Retention appliances                                      Covered
+
+          Payment                                                   Benefits paid in installments
+                                                                    (¼ upfront, balance monthly)
+
+          Service fees                                              Only one orthodontist per treatment course
+
+          Eligibility                                               Dependent children under age 20
+                                                                    when treatment begins
+
+       Dental exclusions (not covered)
+
+       Administrative/                   Claim form/report fees, dental records, missed appointments, services not
+       non-medical                       ordered by a dentist
+
+       Cosmetic                          Cosmetic dentistry, bleaching/whitening, bonding, personalization
+                                         of dentures
+
+       Coverage timing                   Services before coverage starts or after it ends, claims filed after 12 months
+
+       Frequency/limits                  More than one filling per surface, replacement of bridge/crown/denture
+                                         within 5 years (unless exceptions apply)
+
+       Implants                          Including any appliances and/or crowns and the surgical insertion or removal
+                                         of implants unless listed as covered
+
+       Dental appliances                 Replacement of lost/stolen appliances, crowns/fillings/appliances used for
+                                         splinting or bite alteration
+
+       Preventive/hygiene                Oral hygiene, plaque control, dietary instruction
+=================== PAGE 19
+                      USA                      Benefits overview                                         PAGE 19 OF 21
+
+Benefits summary            Pre-authorization requirements                General plan exclusions                Add-ons
+
+       Work, war, injury               Services for work-related injuries, war-related injuries (declared or
+                                       undeclared), self-inflicted injury
+
+       Cost sharing                    Services with no charge to patient, services not on the covered list
+
+       Medical overlap                 Services payable under medical expense benefits of the plan
+
+       Oral/jaw surgery                Surgery to correct jaw malposition
+
+       Hygienist                       Only scaling, cleaning, fluoride by licensed hygienist under
+                                       dentist supervision
+=================== PAGE 20
+                      USA                    Benefits overview                                    PAGE 20 OF 21
+
+Benefits summary            Pre-authorization requirements                 General plan exclusions        Add-ons
+
+       Vision benefits overview
+
+       Annual limit                                              $500 (per person, per year)
+
+       Vision exam copay                                         $0
+
+       Vision hardware copay                                     $0
+
+       Covered services
+
+          Eye exam (refraction & dilation)                       1 per calendar year
+
+          Retinal imaging                                        Covered
+
+          Contact lens exam/fitting                              1 per calendar year
+          (refraction & dilation)
+
+          Frames                                                 1 per calendar year
+
+          Prescription lenses                                    In lieu of contact lenses
+
+          Contact lenses                                         Allowance must be used at once
+=================== PAGE 21
+                     USA                      Benefits overview                                          PAGE 21 OF 21
+
+Benefits summary           Pre-authorization requirements                 General plan exclusions                Add-ons
+
+       Medically necessary contacts
+
+       Covered if prescribed due      1.   Anisometropia of 3D in meridian powers
+       to one of the following        2.   High ametropia exceeding -10D or +10D
+
+                                      3.   Keratoconus not correctable to 20/30 with glasses
+
+                                      4.   Vision improves at least 2 lines on visual acuity chart vs. glasses
+
+                                      (Not covered for other conditions even if provider deems necessary.)
+
+       Vision exclusions (not covered)
+
+       Not covered                    Both eyeglasses and contacts at the same time
+
+                                      Replacement of lost, stolen, or broken glasses/contacts
+
+                                      Safety eyewear
+
+                                      Laser vision correction
+
+                                      Non-prescription glasses/sunglasses
+
+                                      Services/supplies covered under medical insurance (treatment, drugs)
+
+                                      Cosmetic lenses or processes
+
+                                      Experimental corrective vision treatments
+
+                                      Accessories for eyeglasses
+
+                                      Vision care solutions
+
+                                      Orthoptics (eye muscle exercises)
+
+                                      Vision training or subnormal vision aids
+
+                                      Services excluded under General Exclusions & Limitations

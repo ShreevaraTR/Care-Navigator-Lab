@@ -1,19 +1,38 @@
 import type { SimulationCaseInput } from "@/domain/case";
-import { caseFact, generalConcept } from "@/domain/provenance";
+import { caseFact, generalConcept, planRule } from "@/domain/provenance";
 
 /**
- * SAMPLE CASE — exists to exercise the simulation engine end to end.
- * Uses a fictional training plan. Contains NO SafetyWing / Remote Health USA policy.
- * All names, IDs, amounts and remark codes are invented.
+ * SAMPLE CASE: set on Remote Health USA, checked against the plan knowledge base.
+ *
+ * Plan facts are cited rules (rhus.*). Everything about this member, provider, claim,
+ * authorization and amounts is fictional (case facts). Remark code PA01 and the EOB layout are invented.
+ *
+ * v2 (2026-10-03): corrected plan logic. The v1 fictional plan applied 20% coinsurance after
+ * reprocessing, which is wrong for an in-network MRI under the current benefits overview
+ * (in-network diagnostic testing 100%, $0 in-network deductible, no coinsurance or provider copay).
  */
+
+const R = {
+  mri: "rhus.benefit.diagnostic_mri",
+  paListK: "rhus.pa.list.k",
+  noCostShare: "rhus.cost.in_network_no_cost_share",
+  inDeductible: "rhus.cost.deductible.in_network",
+  providerRequests: "rhus.pa.provider_usually_requests",
+  memberConfirms: "rhus.pa.member_must_confirm",
+  penalty: "rhus.pa.penalty",
+  bywater: "rhus.structure.bywater_tpa",
+  selfFunded: "rhus.structure.self_funded_erisa",
+  spd: "rhus.structure.spd_governs",
+} as const;
+
 export const sample01MriBill: SimulationCaseInput = {
   id: "sample-01-mri-bill",
-  version: 1,
+  version: 2,
   portfolioNumber: null,
   code: "SAMPLE-01",
   title: "The $2,400 MRI bill",
   summary:
-    "A member is billed in full for a lumbar MRI they believed was covered. Reconcile the claim, EOB, provider bill and authorization record, then reply to the member.",
+    "A member is billed $2,400 for a pre-authorized, in-network MRI. Reconcile the claim, EOB, provider bill and authorization record against the Remote Health USA rules, then reply to the member.",
   difficulty: "intermediate",
   status: "ready",
   isSample: true,
@@ -31,19 +50,38 @@ export const sample01MriBill: SimulationCaseInput = {
     "provider_communication",
     "member_communication",
   ],
+  knowledge: {
+    planRules: Object.values(R),
+    generalConcepts: [
+      "claim-statuses",
+      "remark-codes",
+      "eob",
+      "provider-statement",
+      "member-responsibility",
+      "prior-authorization",
+      "authorization-linking",
+      "cpt",
+      "icd10",
+      "claim-correction",
+      "appeal",
+      "care-coordination",
+      "member-communication",
+    ],
+    acknowledgedUnclearRules: [],
+  },
   ticket: {
     channel: "chat",
     receivedAt: "2026-09-24T15:12:00Z",
     memberMessage:
       "Hi, I received a $2,400 bill for my MRI. I thought my insurance covered MRIs. My doctor's office even told me it was approved. Can you help me understand what happened? The bill says I have to pay by October 20.",
   },
-  member: { name: "Jordan Reyes", memberId: "SIM-48210-01", details: "Primary member, 2026 plan year" },
+  member: { name: "Jordan Reyes", memberId: "SIM-48210-01", details: "Primary member (fictional)" },
   plan: {
-    name: "Sample Training Plan (fictional)",
-    isSimulated: true,
-    provenance: caseFact("Fictional plan used only for this sample case. Not Remote Health USA."),
+    planId: "rhus",
+    name: "Remote Health USA",
+    provenance: planRule(R.selfFunded, "Plan rules cited from the benefits overview dated 2025-12-16 and the public plan page."),
   },
-  provider: { name: "Lakeside Imaging Center", type: "Freestanding imaging facility", networkStatus: "in_network" },
+  provider: { name: "Lakeside Imaging Center", type: "Freestanding imaging facility (fictional)", networkStatus: "in_network" },
   codes: [
     {
       system: "CPT",
@@ -61,9 +99,10 @@ export const sample01MriBill: SimulationCaseInput = {
     },
   ],
   assumptions: [
-    "The plan in this case is fictional. Its benefit rules exist only for this exercise.",
-    "You can see the member's claim, EOB, authorization and contact history in internal systems.",
-    "Remark code PA01 is invented for this simulation.",
+    "The member, Lakeside Imaging Center, Dr. Patel, and all IDs, dates and amounts are fictional. Lakeside's in-network (Cigna PPO) status is a simulated case fact.",
+    "You can see the member's claim, EOB, authorization and contact history. Reprocessing is done by the claims administrator: you request it, you don't perform it.",
+    "Remark code PA01 and this EOB layout are invented for the simulation. Real administrator EOBs and codes look different.",
+    "The EOB's $0 member responsibility is a simulated fact. The official sources don't describe how a missing-authorization denial appears on a real EOB.",
   ],
   documents: [
     {
@@ -106,6 +145,7 @@ export const sample01MriBill: SimulationCaseInput = {
           dateOfService: "2026-08-14",
           service: "MRI lumbar spine",
           code: "72148",
+          benefitKey: "diagnostic_mri",
           billed: 240000,
           allowed: 0,
           planPaid: 0,
@@ -120,7 +160,7 @@ export const sample01MriBill: SimulationCaseInput = {
       remarks: [
         {
           code: "PA01",
-          text: "This service requires prior authorization and none was found for this claim. Under the provider's network agreement, this amount is the provider's responsibility. The member may not be billed for it.",
+          text: "Prior authorization required; no authorization was found for this claim. Claim denied. Member responsibility for this line: $0.00.",
         },
       ],
     },
@@ -155,20 +195,25 @@ export const sample01MriBill: SimulationCaseInput = {
       decisionDate: "2026-08-06",
       validFrom: "2026-08-06",
       validTo: "2026-11-04",
-      notes: "Approved: meets criteria after 6 weeks of conservative treatment.",
+      notes: "Approved.",
+      requirement: { benefitKey: "diagnostic_mri", required: true },
     },
     {
       id: "doc-benefits",
       type: "benefit_summary",
-      title: "Benefit summary (fictional plan)",
-      provenance: caseFact("Fictional plan."),
-      planName: "Sample Training Plan (fictional)",
-      isSimulatedPlan: true,
+      title: "Plan rules (official, Remote Health USA)",
+      provenance: planRule(R.spd, "Excerpt from the plan knowledge base. Each line cites the benefits overview or the public plan page."),
+      planName: "Remote Health USA",
+      isSimulatedPlan: false,
       items: [
-        { label: "Advanced imaging (MRI / CT / PET)", value: "Covered; prior authorization required", provenance: caseFact() },
-        { label: "Who obtains prior authorization", value: "The in-network ordering or servicing provider", provenance: caseFact() },
-        { label: "Advanced imaging cost share (in-network)", value: "20% coinsurance after deductible", provenance: caseFact() },
-        { label: "Individual deductible", value: "$1,500 (met for 2026 as of Jul 30)", provenance: caseFact() },
+        { label: "MRI benefit", ruleId: R.mri, provenance: planRule(R.mri) },
+        { label: "Pre-authorization list", ruleId: R.paListK, provenance: planRule(R.paListK) },
+        { label: "In-network cost sharing", ruleId: R.noCostShare, provenance: planRule(R.noCostShare) },
+        { label: "In-network deductible", ruleId: R.inDeductible, provenance: planRule(R.inDeductible) },
+        { label: "Who requests pre-authorization", ruleId: R.providerRequests, provenance: planRule(R.providerRequests) },
+        { label: "Member's responsibility", ruleId: R.memberConfirms, provenance: planRule(R.memberConfirms) },
+        { label: "Missing pre-authorization", ruleId: R.penalty, provenance: planRule(R.penalty) },
+        { label: "Claims administration", ruleId: R.bywater, provenance: planRule(R.bywater) },
       ],
     },
     {
@@ -176,9 +221,9 @@ export const sample01MriBill: SimulationCaseInput = {
       type: "note",
       title: "Member contact history",
       provenance: caseFact(),
-      author: "Member Services",
+      author: "Member support",
       date: "2026-08-05",
-      body: "Member called asking whether a lumbar MRI needs approval. Advised that advanced imaging requires prior authorization and that the ordering provider submits the request. Member confirmed that Dr. Patel's office had submitted it on 08/04.",
+      body: "Member asked whether a lumbar MRI needs approval. Advised that MRI requires pre-authorization, that the in-network provider usually requests it, and that the member should confirm it has been obtained before the scan. Member confirmed that Dr. Patel's office submitted the request on 08/04.",
     },
   ],
   tasks: [
@@ -197,31 +242,42 @@ export const sample01MriBill: SimulationCaseInput = {
           id: "c-claim-status",
           category: "claims_reasoning",
           points: 4,
+          basis: [
+            { kind: "case_fact", documentId: "doc-claim" },
+            { kind: "general_concept", conceptId: "claim-statuses" },
+            { kind: "general_concept", conceptId: "remark-codes" },
+          ],
           expectation: "Reads the claim status and denial reason correctly.",
           feedbackIfMissed:
-            "The claim line shows status 'Denied' with reason PA01 (no prior authorization on file). Reading the status and the denial reason is the first step in any claims investigation.",
+            "The claim line shows 'Denied' with reason PA01 (no prior authorization on file). Reading the status and denial reason is the first step in any claims investigation.",
           grading: { mode: "auto_choice", correctOptionIds: ["denied-auth"] },
         },
       ],
-      modelAnswer: "Denied, reason PA01: the claims system found no prior authorization attached to this claim.",
+      modelAnswer: "Denied with reason PA01: the claims system found no prior authorization attached to this claim.",
     },
     {
       id: "t-eob-owed",
       kind: "amount",
+      measures: "eob_member_responsibility",
       prompt: "According to the EOB, how much does the member currently owe for this claim?",
-      hint: "Look at the member responsibility column and the remark code. Do not use the provider bill.",
+      hint: "Use the member responsibility line and the remark code, not the provider bill.",
       criteria: [
         {
           id: "c-eob-owed",
           category: "eob_interpretation",
           points: 6,
-          expectation: "Identifies $0.00 member responsibility from the EOB.",
+          basis: [
+            { kind: "case_fact", documentId: "doc-eob" },
+            { kind: "general_concept", conceptId: "eob" },
+            { kind: "general_concept", conceptId: "member-responsibility" },
+          ],
+          expectation: "Reads $0.00 member responsibility from the EOB.",
           feedbackIfMissed:
-            "The EOB shows $0.00 member responsibility. Remark PA01 says the denied amount is the provider's responsibility and the member may not be billed. The billed charge ($2,400) is not what the member owes.",
+            "The EOB shows $0.00 member responsibility for this line. The $2,400 is the billed charge, which is not the same as what the member owes.",
           grading: { mode: "auto_amount", expectedCents: 0, toleranceCents: 0 },
         },
       ],
-      modelAnswer: "$0.00. The denied charge is provider liability under remark PA01.",
+      modelAnswer: "$0.00, per the EOB's member responsibility line.",
     },
     {
       id: "t-bill-vs-eob",
@@ -229,7 +285,7 @@ export const sample01MriBill: SimulationCaseInput = {
       prompt: "Compare the provider statement to the EOB. What do you find?",
       options: [
         { id: "match", label: "They match: the member owes $2,400" },
-        { id: "bill-higher", label: "The bill asks for $2,400, but the EOB says the member owes $0" },
+        { id: "bill-higher", label: "The bill asks for $2,400, but the EOB shows $0 member responsibility" },
         { id: "bill-lower", label: "The bill is lower than the EOB member responsibility" },
         { id: "cannot", label: "They can't be compared because they're different documents" },
       ],
@@ -238,20 +294,25 @@ export const sample01MriBill: SimulationCaseInput = {
           id: "c-bill-vs-eob",
           category: "eob_interpretation",
           points: 6,
-          expectation: "Spots that the provider is billing the member for an amount the EOB assigns to the provider.",
+          basis: [
+            { kind: "case_fact", documentId: "doc-eob" },
+            { kind: "case_fact", documentId: "doc-bill" },
+            { kind: "general_concept", conceptId: "provider-statement" },
+          ],
+          expectation: "Spots that the provider bill conflicts with the EOB.",
           feedbackIfMissed:
-            "Reconciling the provider bill against the EOB is a core Care Navigator check. Here the provider is billing $2,400 while the EOB shows $0 member responsibility, so the bill conflicts with how the claim was processed.",
+            "Reconciling the provider statement against the EOB is a core Care Navigator check. The statement asks for $2,400 while the EOB shows $0 member responsibility, so the bill doesn't match how the claim was processed.",
           grading: { mode: "auto_choice", correctOptionIds: ["bill-higher"] },
         },
       ],
-      modelAnswer: "The bill conflicts with the EOB. The provider is billing the member for an amount the EOB assigns to the provider.",
+      modelAnswer: "The bill conflicts with the EOB: $2,400 requested vs. $0 member responsibility.",
     },
     {
       id: "t-auth-status",
       kind: "single_choice",
       prompt: "What is the prior authorization situation for this service on this date of service?",
       options: [
-        { id: "not-required", label: "Prior authorization was not required" },
+        { id: "not-required", label: "Pre-authorization was not required for an MRI" },
         { id: "required-missing", label: "Required, but never requested" },
         { id: "required-approved", label: "Required, and an approved authorization covers this service and date" },
         { id: "required-expired", label: "Required, but the authorization had expired" },
@@ -261,14 +322,19 @@ export const sample01MriBill: SimulationCaseInput = {
         {
           id: "c-auth-status",
           category: "prior_authorization",
-          points: 8,
-          expectation: "Finds the approved authorization and confirms that the date of service falls within its validity window.",
+          points: 6,
+          basis: [
+            { kind: "plan_rule", ruleId: R.mri },
+            { kind: "plan_rule", ruleId: R.paListK },
+            { kind: "case_fact", documentId: "doc-auth" },
+          ],
+          expectation: "Knows MRI requires pre-authorization (official rule), finds the approved authorization, and confirms the date of service falls inside its validity window.",
           feedbackIfMissed:
-            "The benefit summary shows that advanced imaging requires authorization, and the authorization record shows AUTH-2026-077134 approved for 72148, valid 08/06 to 11/04. The 08/14 date of service falls inside that window. So the denial does not mean the service was unauthorized.",
+            "Official rule: MRI is on the Remote Health USA pre-authorization list (item K: Diagnostic testing (MRI/PET/CT)). Case fact: AUTH-2026-077134 was approved for 72148, valid 08/06 to 11/04, and the 08/14 date of service is inside that window. Required and obtained: the denial does not mean the service was unauthorized.",
           grading: { mode: "auto_choice", correctOptionIds: ["required-approved"] },
         },
       ],
-      modelAnswer: "Authorization was required and obtained: AUTH-2026-077134, approved 08/06, valid through 11/04.",
+      modelAnswer: "Required (official rule, list item K) and obtained: AUTH-2026-077134, approved 08/06, valid through 11/04.",
     },
     {
       id: "t-auth-match",
@@ -286,13 +352,46 @@ export const sample01MriBill: SimulationCaseInput = {
           id: "c-auth-match",
           category: "prior_authorization",
           points: 5,
-          expectation: "Confirms that the code, diagnosis, provider and date all match, and that the authorization number is missing from the claim.",
+          basis: [
+            { kind: "case_fact", documentId: "doc-claim" },
+            { kind: "case_fact", documentId: "doc-auth" },
+            { kind: "general_concept", conceptId: "authorization-linking" },
+          ],
+          expectation: "Confirms that code, diagnosis, provider and date all match, and that the authorization number is missing from the claim.",
           feedbackIfMissed:
-            "Every clinical and administrative element matches the authorization, but the claim's authorization number field is blank. That gap is the most likely reason the system did not link the authorization, which points to a processing or submission issue.",
+            "Every clinical and administrative element matches the authorization, but the claim's authorization number field is blank. An authorization can exist and still not be linked to the claim. That gap is the most likely cause of the denial.",
           grading: { mode: "auto_choice", correctOptionIds: ["cpt", "dx", "servicing", "dos"] },
         },
       ],
-      modelAnswer: "CPT, diagnosis, servicing provider and date all match. The authorization number is NOT on the claim.",
+      modelAnswer: "CPT, diagnosis, servicing provider and date all match. The authorization number is not on the claim.",
+    },
+    {
+      id: "t-plan-cost",
+      kind: "single_choice",
+      prompt: "Under the current Remote Health USA benefits overview, what cost sharing applies to a covered in-network MRI?",
+      options: [
+        { id: "full", label: "Covered at 100%: $0 deductible, no coinsurance, no provider copay" },
+        { id: "coins20", label: "20% coinsurance after the deductible" },
+        { id: "oon70", label: "70% after a $1,000 deductible" },
+        { id: "copay30", label: "A $30 copay" },
+      ],
+      criteria: [
+        {
+          id: "c-plan-cost",
+          category: "plan_knowledge",
+          points: 6,
+          basis: [
+            { kind: "plan_rule", ruleId: R.mri },
+            { kind: "plan_rule", ruleId: R.noCostShare },
+            { kind: "plan_rule", ruleId: R.inDeductible },
+          ],
+          expectation: "Applies the official in-network rule: diagnostic testing including MRI is covered at 100%, with a $0 deductible and no coinsurance or provider copay.",
+          feedbackIfMissed:
+            "Official rules: in-network diagnostic testing (X-ray, MRI, CT, PET scans, labs) is covered at 100%, and the in-network deductible is $0. The plan has no in-network coinsurance or provider copay. '70% after deductible' is the out-of-network level. $30 is a prescription tier, not a provider charge.",
+          grading: { mode: "auto_choice", correctOptionIds: ["full"] },
+        },
+      ],
+      modelAnswer: "Covered at 100% in network: $0 deductible, no coinsurance, no provider copay.",
     },
     {
       id: "t-icd-why",
@@ -309,13 +408,17 @@ export const sample01MriBill: SimulationCaseInput = {
           id: "c-icd-why",
           category: "coding_understanding",
           points: 5,
+          basis: [
+            { kind: "general_concept", conceptId: "icd10" },
+            { kind: "case_fact", documentId: "doc-claim" },
+          ],
           expectation: "Picks the ICD-10 diagnosis code as the reason for care.",
           feedbackIfMissed:
-            "ICD-10 codes describe why care was given (the diagnosis). M54.16 (lumbar radiculopathy) is the reason for the MRI. 72148 is the CPT code for what was done. AUTH and PA01 are an authorization number and a remark code, not clinical codes.",
+            "ICD-10-CM codes describe why care was given. M54.16 (lumbar radiculopathy) is the reason for the MRI. 72148 is the CPT code for what was done. AUTH and PA01 are an authorization number and a remark code, not clinical codes.",
           grading: { mode: "auto_choice", correctOptionIds: ["m5416"] },
         },
       ],
-      modelAnswer: "M54.16, the ICD-10-CM diagnosis code. It tells you why the MRI was needed.",
+      modelAnswer: "M54.16, the ICD-10-CM diagnosis code: why the MRI was needed.",
     },
     {
       id: "t-cpt-what",
@@ -332,6 +435,10 @@ export const sample01MriBill: SimulationCaseInput = {
           id: "c-cpt-what",
           category: "coding_understanding",
           points: 4,
+          basis: [
+            { kind: "general_concept", conceptId: "cpt" },
+            { kind: "case_fact", documentId: "doc-claim" },
+          ],
           expectation: "Identifies CPT as describing what service was performed.",
           feedbackIfMissed: "CPT codes describe what was done: the procedure or service. 72148 is the lumbar spine MRI without contrast.",
           grading: { mode: "auto_choice", correctOptionIds: ["proc"] },
@@ -344,60 +451,99 @@ export const sample01MriBill: SimulationCaseInput = {
       kind: "free_text",
       prompt:
         "Investigation summary: What most likely went wrong? Was the claim processed correctly? What would you verify, and what are your next steps?",
-      hint: "Separate what the documents prove from what you are inferring.",
+      hint: "Separate what the documents prove from what you are inferring, and label official plan rules as such.",
       criteria: [
         {
           id: "c-root-cause",
           category: "claims_reasoning",
           points: 8,
+          basis: [
+            { kind: "case_fact", documentId: "doc-claim" },
+            { kind: "case_fact", documentId: "doc-auth" },
+            { kind: "general_concept", conceptId: "authorization-linking" },
+          ],
           expectation:
-            "States that the denial conflicts with a valid, matching authorization. Treats it as a likely processing or submission issue (for example, the authorization number missing from the claim), not as an unauthorized service.",
+            "States that the denial conflicts with a valid, matching authorization, and treats it as a likely authorization-linking or submission issue (the authorization number is missing from the claim), not as an unauthorized service.",
           feedbackIfMissed:
-            "The key insight is the contradiction: the claim was denied for 'no authorization', yet a valid matching authorization exists for that date. That makes it a processing or matching problem to fix, not a legitimate denial to explain to the member.",
+            "The key insight is the contradiction: the claim was denied for 'no authorization', yet a valid, matching authorization exists for that date. That makes it a processing problem to fix, not a legitimate denial to explain to the member.",
           grading: { mode: "self" },
         },
         {
           id: "c-verify",
           category: "claims_reasoning",
           points: 4,
+          basis: [
+            { kind: "general_concept", conceptId: "authorization-linking" },
+            { kind: "general_concept", conceptId: "claim-correction" },
+          ],
           expectation:
-            "Lists what still needs confirming: why the authorization did not link (for example, the authorization number missing on submission), whether a corrected claim is already in progress, and the provider account status.",
+            "Lists what still needs confirming: why the authorization didn't link, whether a corrected claim is already in progress, and the status of the provider account.",
           feedbackIfMissed:
-            "A strong investigation says what is still unknown. The documents strongly suggest the authorization was not linked, but you should confirm the cause before telling anyone exactly why it happened.",
+            "A strong investigation says what is still unknown. The documents strongly suggest the authorization wasn't linked, but confirm the cause before telling anyone exactly why it happened.",
           grading: { mode: "self" },
         },
         {
           id: "c-reprocess",
           category: "problem_solving",
           points: 5,
+          basis: [
+            { kind: "plan_rule", ruleId: R.bywater },
+            { kind: "general_concept", conceptId: "claim-correction" },
+            { kind: "general_concept", conceptId: "appeal" },
+          ],
           expectation:
-            "Proposes the proportionate fix: have the claim reprocessed or reconsidered with the authorization attached (internally, or through a corrected claim from the provider) before considering a formal appeal.",
+            "Proposes the proportionate fix: ask the claims administrator (Bywater) to review and reprocess the claim with the authorization linked, or have the provider submit a corrected claim with the authorization number. Reach for a formal appeal only if that doesn't resolve it.",
           feedbackIfMissed:
-            "When a denial results from a processing or matching error, the usual first step is to get the claim reprocessed with the authorization linked. A formal appeal is generally for disputing a decision made correctly on the information available.",
+            "When a denial comes from a processing or linking error, the first step is reprocessing or a corrected claim. Official rule: claims administration is handled by Bywater, so that is where reprocessing happens. An appeal is for disputing a decision made correctly on the information available.",
           grading: { mode: "self" },
         },
         {
           id: "c-provider-hold",
           category: "problem_solving",
           points: 3,
-          expectation: "Plans to contact the provider's billing office: point out the $0 EOB member responsibility and ask them to hold collection while the claim is reprocessed.",
+          basis: [
+            { kind: "case_fact", documentId: "doc-bill" },
+            { kind: "case_fact", documentId: "doc-eob" },
+            { kind: "general_concept", conceptId: "care-coordination" },
+          ],
+          expectation: "Plans to contact the provider's billing office: point out the $0 EOB member responsibility and ask them to hold collection while the claim is reviewed.",
           feedbackIfMissed:
-            "The member has a payment deadline. Coordinating with the provider to pause billing protects the member while the claim is fixed. This is a core part of provider/member coordination.",
+            "The member has a payment deadline. Coordinating with the provider to pause billing protects the member while the claim is fixed.",
           grading: { mode: "self" },
         },
         {
-          id: "c-cost-share",
+          id: "c-plan-benefit",
           category: "plan_knowledge",
-          points: 6,
+          points: 4,
+          basis: [
+            { kind: "plan_rule", ruleId: R.mri },
+            { kind: "plan_rule", ruleId: R.noCostShare },
+            { kind: "plan_rule", ruleId: R.inDeductible },
+          ],
           expectation:
-            "Recognises that after reprocessing the member may still owe normal cost sharing (20% coinsurance on the allowed amount, deductible already met), and that this will not be $2,400.",
+            "Applies the official rules: a covered in-network MRI is paid at 100%, with a $0 in-network deductible and no coinsurance or provider copay. Once the claim is correctly processed, no cost sharing is expected for this MRI.",
           feedbackIfMissed:
-            "Fixing the denial does not automatically mean $0. Under this fictional plan, advanced imaging carries 20% coinsurance after the deductible, which is already met. So the member will likely owe 20% of the allowed amount, not the $2,400 billed charge. Setting that expectation now avoids a second surprise.",
+            "Official rules: in-network diagnostic testing including MRI is covered at 100%, the in-network deductible is $0, and there is no in-network coinsurance or provider copay. Don't import cost-sharing assumptions from other plans.",
+          grading: { mode: "self" },
+        },
+        {
+          id: "c-penalty",
+          category: "plan_knowledge",
+          points: 2,
+          basis: [
+            { kind: "plan_rule", ruleId: R.penalty },
+            { kind: "plan_rule", ruleId: R.memberConfirms },
+            { kind: "case_fact", documentId: "doc-contact-log" },
+          ],
+          expectation:
+            "Notes that the official consequence of a missing pre-authorization is a reduction of covered charges by 10% (up to $500), not the full charge. Here pre-authorization was obtained and the member confirmed it beforehand, so that consequence shouldn't come into play.",
+          feedbackIfMissed:
+            "Official rule: if required pre-authorization isn't obtained, the plan reduces covered charges by 10%, up to $500. Even the worst-case reading of 'no authorization' doesn't support billing the member $2,400. In this case authorization was obtained.",
           grading: { mode: "self" },
         },
       ],
       modelAnswer:
-        "The claim was denied for 'no prior authorization on file', but AUTH-2026-077134 was approved for this exact service, diagnosis, facility and date. The claim's authorization number field is blank, so the authorization most likely was not linked when the claim was adjudicated. The claim was not processed correctly given the authorization on file. Next steps: (1) confirm why the authorization did not link and whether a corrected claim is pending; (2) request reprocessing with the authorization attached; (3) contact Lakeside's billing office, point out that the EOB shows $0 member responsibility, and ask them to hold the account; (4) set expectations: once reprocessed, the member will likely owe 20% coinsurance on the allowed amount.",
+        "The claim was denied for 'no prior authorization on file' (PA01), but AUTH-2026-077134 was approved for this exact service, diagnosis, facility and date. The claim's authorization number field is blank, so the authorization most likely wasn't linked during adjudication. The claim was not processed correctly given the authorization on file. Next steps: (1) confirm why the authorization didn't link and whether a corrected claim is pending; (2) ask the claims administrator (Bywater) to review and reprocess with the authorization linked, or have Lakeside submit a corrected claim; (3) contact Lakeside's billing office, point out that the EOB shows $0 member responsibility, and ask them to hold the account. Under the official rules a covered in-network MRI is paid at 100% with a $0 deductible, so no cost sharing is expected once it's processed correctly.",
     },
     {
       id: "t-member-reply",
@@ -408,14 +554,20 @@ export const sample01MriBill: SimulationCaseInput = {
           id: "c-comm-accuracy",
           category: "member_communication",
           points: 2,
-          expectation: "Is factually accurate: the authorization was approved, the denial looks like a processing issue, and the EOB shows $0 currently owed.",
-          feedbackIfMissed: "The reply should reflect the facts you found, with no guesses stated as certainties.",
+          basis: [
+            { kind: "case_fact", documentId: "doc-eob" },
+            { kind: "case_fact", documentId: "doc-auth" },
+            { kind: "general_concept", conceptId: "member-communication" },
+          ],
+          expectation: "Is accurate: the approval was obtained, the denial looks like a processing issue, and the EOB shows $0 currently owed.",
+          feedbackIfMissed: "The reply should reflect the facts you found, with nothing guessed stated as certain.",
           grading: { mode: "self" },
         },
         {
           id: "c-comm-empathy",
           category: "member_communication",
           points: 1.5,
+          basis: [{ kind: "general_concept", conceptId: "member-communication" }],
           expectation: "Acknowledges the stress of an unexpected $2,400 bill.",
           feedbackIfMissed: "A short, genuine acknowledgement builds trust before you explain.",
           grading: { mode: "self" },
@@ -424,33 +576,47 @@ export const sample01MriBill: SimulationCaseInput = {
           id: "c-comm-plain",
           category: "member_communication",
           points: 2,
-          expectation: "Explains in plain English, for example 'prior approval' rather than 'PA01 denial', and 'your share' rather than 'coinsurance' without explanation.",
-          feedbackIfMissed: "Insurance jargon confuses members. Translate terms, or explain them in a few words.",
+          basis: [{ kind: "general_concept", conceptId: "member-communication" }],
+          expectation: "Explains in plain English, e.g. 'pre-approval' rather than 'PA01 denial', and 'what you owe' rather than 'member responsibility'.",
+          feedbackIfMissed: "Insurance jargon confuses members. Translate the terms, or explain them in a few words.",
           grading: { mode: "self" },
         },
         {
           id: "c-comm-ownership",
           category: "member_communication",
           points: 1.5,
-          expectation: "Takes ownership: says what you will do (request reprocessing, contact the provider).",
-          feedbackIfMissed: "The member should leave knowing that someone is actively handling this, not that they have to chase it themselves.",
+          basis: [
+            { kind: "general_concept", conceptId: "care-coordination" },
+            { kind: "general_concept", conceptId: "member-communication" },
+          ],
+          expectation: "Takes ownership: says what you will do (ask for the claim to be reprocessed, contact the provider).",
+          feedbackIfMissed: "The member should leave knowing someone is actively handling this, not that they have to chase it themselves.",
           grading: { mode: "self" },
         },
         {
           id: "c-comm-promises",
           category: "member_communication",
           points: 1.5,
-          expectation: "Avoids unsupported promises. Does not guarantee a $0 outcome, and mentions that normal cost sharing may still apply.",
+          basis: [
+            { kind: "general_concept", conceptId: "member-communication" },
+            { kind: "plan_rule", ruleId: R.noCostShare },
+          ],
+          expectation:
+            "Avoids guaranteeing the outcome or timing of reprocessing. It can say that in-network imaging is normally covered in full under the plan, but it doesn't promise the final result before reprocessing is complete.",
           feedbackIfMissed:
-            "Saying 'you won't owe anything' or 'this will be fixed' promises an outcome you don't control. After reprocessing, coinsurance may still apply.",
+            "'This will definitely be fixed by Friday' or 'you'll never owe anything' promises an outcome you don't control. Say what the plan rules and the EOB show, and what you're doing to confirm.",
           grading: { mode: "self" },
         },
         {
           id: "c-comm-next",
           category: "member_communication",
           points: 1.5,
-          expectation: "Gives a clear next step for the member: hold off on paying the $2,400 for now, and when they will hear back.",
-          feedbackIfMissed: "End with what the member should do now and when they will hear back. Their payment deadline makes this essential.",
+          basis: [
+            { kind: "case_fact", documentId: "doc-bill" },
+            { kind: "general_concept", conceptId: "member-communication" },
+          ],
+          expectation: "Gives a clear next step: hold off on paying the $2,400 for now, and when they will hear back.",
+          feedbackIfMissed: "End with what the member should do now and when they'll hear back. The payment deadline makes this essential.",
           grading: { mode: "self" },
         },
       ],
@@ -459,17 +625,17 @@ export const sample01MriBill: SimulationCaseInput = {
   ],
   debrief: {
     whatHappened:
-      "Lakeside Imaging Center billed the MRI without the authorization number. The claims system did not link the approved authorization, denied the claim for 'no authorization on file', and correctly made the amount provider liability on the EOB. The provider then billed the member the full $2,400 anyway.",
+      "Lakeside Imaging Center submitted the MRI claim without the authorization number. The approved authorization (AUTH-2026-077134) wasn't linked when the claim was adjudicated, so the claim was denied as 'no authorization on file' (PA01). The EOB shows $0 member responsibility, yet Lakeside billed the member the full $2,400 charge.",
     correctReasoning: [
-      "The claim was denied (PA01), but the EOB shows $0 member responsibility because the denied amount is provider liability.",
-      "The provider bill ($2,400) conflicts with the EOB ($0), so the member should not be paying this bill as it stands.",
-      "Prior authorization was required AND approved: AUTH-2026-077134, for 72148 with M54.16, at Lakeside, valid 08/06 to 11/04. The 08/14 date of service is covered.",
-      "Every element matches except the authorization number, which is missing from the claim. That points to a processing or submission issue, not an unauthorized service.",
-      "The right fix is reprocessing with the authorization linked, plus a billing hold from the provider. A formal appeal is not the first tool here.",
-      "After reprocessing, the member will likely owe 20% coinsurance on the allowed amount (deductible met), not $0 and not $2,400.",
+      "The claim was denied (PA01), and the EOB shows $0 member responsibility. The EOB is the record of how the claim was processed, and a provider statement shouldn't ask for more than it.",
+      "The provider bill ($2,400 due) conflicts with the EOB ($0), so the member shouldn't pay the bill while this is investigated.",
+      "Official rule: MRI requires pre-authorization (Remote Health USA pre-authorization list, item K). Case fact: it was obtained. AUTH-2026-077134 was approved for 72148 with M54.16 at Lakeside, valid 08/06 to 11/04, and the 08/14 date of service is inside that window.",
+      "Required, obtained and linked are three separate questions. Every element matches except the authorization number, which is missing from the claim. That points to an authorization-linking or submission issue to verify, not an unauthorized service.",
+      "The fix is a review and reprocessing by the claims administrator (Bywater) with the authorization linked, or a corrected claim from the provider, while the provider holds the bill. A formal appeal is not the first tool for a processing error.",
+      "Official rules: a covered in-network MRI is paid at 100%, with a $0 in-network deductible and no coinsurance or provider copay, so no cost sharing is expected once the claim is processed correctly. The missing-authorization consequence (covered charges reduced by 10%, up to $500) shouldn't apply either, because authorization was obtained.",
     ],
     modelMemberResponse:
-      "Hi Jordan, I'm sorry you got such a big bill, and I can see why it was confusing. I've looked into it. Your MRI did need prior approval, and it was approved on August 6 for this exact scan and date. The claim was still denied for 'no approval on file', which looks like a processing issue rather than anything you did. Your Explanation of Benefits currently shows you owe $0 for this claim, so please hold off on paying the $2,400 for now. I'm asking our claims team to reprocess the claim with the approval attached, and I'll contact Lakeside Imaging to ask them to pause the bill. Once it's reprocessed, you may owe your usual share for imaging (20% of the plan's approved amount), but not the full $2,400. I'll update you by Friday.",
-    conceptsToReview: ["prior-authorization", "eob", "member-responsibility", "allowed-amount", "coinsurance", "cpt", "icd10", "appeals-denials"],
+      "Hi Jordan, I'm sorry. An unexpected $2,400 bill is stressful, and I can see why it was confusing. I've looked into it. Your MRI did need pre-approval, and it was approved on August 6 for this exact scan and date. The claim was still marked 'no approval on file', which looks like a processing issue rather than anything you did. Your Explanation of Benefits shows you currently owe $0 for this claim, so please hold off on paying the $2,400 for now. I'm asking the claims team to review and reprocess the claim with the approval attached, and I'm contacting Lakeside Imaging to ask them to pause the bill. In-network imaging like this is normally covered in full under your plan, and I'll confirm the final result once it's reprocessed. I'll update you by Friday.",
+    conceptsToReview: ["prior-authorization", "authorization-linking", "eob", "provider-statement", "member-responsibility", "cpt", "icd10", "claim-correction"],
   },
 };

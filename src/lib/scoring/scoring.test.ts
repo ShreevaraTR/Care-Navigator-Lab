@@ -11,13 +11,13 @@ describe("content validation", () => {
     expect(cases.length).toBeGreaterThan(0);
   });
 
-  it("rejects plan_rule provenance that cites no registered source", () => {
+  it("rejects plan_rule provenance that cites an unknown rule", () => {
     const bad = structuredClone(sample01MriBill);
-    bad.plan.provenance = { kind: "plan_rule", sourceRef: "not-a-real-source" };
-    expect(() => validateCase(bad)).toThrow(/unregistered source/);
+    bad.plan.provenance = { kind: "plan_rule", ruleId: "rhus.not_a_real_rule" };
+    expect(() => validateCase(bad)).toThrow(/UNKNOWN_PLAN_RULE/);
   });
 
-  it("rejects plan_rule provenance with no sourceRef", () => {
+  it("rejects plan_rule provenance with no ruleId", () => {
     const bad = structuredClone(sample01MriBill);
     bad.plan.provenance = { kind: "plan_rule" };
     expect(() => validateCase(bad)).toThrow();

@@ -9,6 +9,7 @@ import { computeScore, gradeAuto, pendingSelfReview } from "@/lib/scoring/scorin
 import { attemptRepository, newId, useAttempts } from "@/lib/storage/attempts";
 import { DOCUMENT_TYPE_LABELS, DocumentViewer, NetworkBadge } from "./DocumentViewer";
 import { TaskInput } from "./TaskInput";
+import { KnowledgeTested } from "./KnowledgeTested";
 
 export function CaseWorkspacePage() {
   const { caseId } = useParams();
@@ -61,13 +62,15 @@ function CaseBrief({ c, previous }: { c: SimulationCase; previous: Attempt[] }) 
               ["Tasks", `${c.tasks.length} (structured answers, an investigation write-up, and a member reply)`],
             ]}
           />
-          {c.isSample && (
-            <p className="mt-4 rounded-md border border-violet-200 bg-violet-50 px-3 py-2 text-[13px] text-violet-900">
-              Sample case. It uses a fictional plan and contains no Remote Health USA policy.
-            </p>
-          )}
+          <p className="mt-4 rounded-md border border-sky-200 bg-sky-50 px-3 py-2 text-[13px] text-sky-900">
+            {c.plan.planId === "rhus"
+              ? "Set on Remote Health USA. Plan facts are official rules with citations. The member, provider, claim, authorization and amounts are fictional."
+              : "Uses a fictional plan. Nothing in this case is Remote Health USA policy."}
+            {c.isSample && " Sample case."}
+          </p>
         </Card>
-        <Card title="Previous attempts">
+        <div className="lg:col-span-2"><KnowledgeTested c={c} /></div>
+        <Card title="Previous attempts" className="lg:col-start-3 lg:row-start-1">
           {previous.length === 0 ? (
             <p className="text-ink-muted">None yet.</p>
           ) : (

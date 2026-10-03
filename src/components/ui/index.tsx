@@ -57,14 +57,21 @@ const SOURCE_TONES: Record<SourceKind, Tone> = {
   assumption: "violet",
 };
 
-/** Labels where information comes from. Shown next to every evidence item. */
+/** Labels where information comes from. Official plan rules link to the knowledge base. */
 export function SourceBadge({ provenance, kind }: { provenance?: Provenance; kind?: SourceKind }) {
   const k = provenance?.kind ?? kind ?? "case_fact";
-  const title = [provenance?.note, provenance?.sourceRef && `Source: ${provenance.sourceRef}`, provenance?.locator].filter(Boolean).join(" · ");
-  return (
+  const title = [provenance?.ruleId && `Rule: ${provenance.ruleId}`, provenance?.note].filter(Boolean).join(" · ");
+  const badge = (
     <Badge tone={SOURCE_TONES[k]} title={title || undefined}>
       {SOURCE_KIND_LABELS[k]}
     </Badge>
+  );
+  return provenance?.ruleId ? (
+    <Link to={`/learn/remote-health-usa?rule=${encodeURIComponent(provenance.ruleId)}`} className="hover:opacity-80">
+      {badge}
+    </Link>
+  ) : (
+    badge
   );
 }
 

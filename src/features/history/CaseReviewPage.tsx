@@ -1,9 +1,11 @@
 import { Link, useParams } from "react-router-dom";
 import { Badge, Button, ButtonLink, Card, EmptyState, PageHeader, ScoreBar, cx } from "@/components/ui";
 import { caseById } from "@/content/cases";
-import { topicById } from "@/content/learn/topics";
+import { conceptById } from "@/content/learn/concepts";
+import { RuleLink } from "@/features/learn/RuleViews";
+import { KnowledgeTested } from "@/features/simulations/KnowledgeTested";
 import type { Answer, Attempt, CriterionOutcome } from "@/domain/attempt";
-import type { RubricCriterion, SimulationCase, Task } from "@/domain/case";
+import type { Basis, RubricCriterion, SimulationCase, Task } from "@/domain/case";
 import { CATEGORY_LABELS, SKILL_LABELS } from "@/domain/taxonomy";
 import { formatCents, formatDate } from "@/lib/format/money";
 import { attemptToMarkdown, downloadText } from "@/lib/portfolio/record";
@@ -207,7 +209,7 @@ function Report({ c, attempt }: { c: SimulationCase; attempt: Attempt }) {
 
       <Card title="Task-by-task" bodyClassName="p-0">
         <ul className="divide-y divide-line">
-          {c.tasks.map((t, i) => <TaskReview key={t.id} n={i + 1} task={t} attempt={attempt} />)}
+          {c.tasks.map((t, i) => <TaskReview key={t.id} n={i + 1} c={c} task={t} attempt={attempt} />)}
         </ul>
       </Card>
 
@@ -232,19 +234,21 @@ function Report({ c, attempt }: { c: SimulationCase; attempt: Attempt }) {
         <Card title="Concepts to review">
           <ul className="space-y-1 text-[13px]">
             {c.debrief.conceptsToReview.map((id) => {
-              const t = topicById(id);
-              return <li key={id}>{t ? <Link className="text-brand hover:underline" to={`/learn/${id}`}>{t.title}</Link> : id}</li>;
+              const t = conceptById(id);
+              return <li key={id}>{t ? <Link className="text-brand hover:underline" to={`/learn/concepts/${id}`}>{t.term}</Link> : id}</li>;
             })}
           </ul>
         </Card>
       </div>
+
+      <KnowledgeTested c={c} />
 
       <PortfolioFields attempt={attempt} />
     </div>
   );
 }
 
-function TaskReview({ n, task, attempt }: { n: number; task: Task; attempt: Attempt }) {
+function TaskReview({ n, c, task, attempt }: { n: number; c: SimulationCase; task: Task; attempt: Attempt }) {
   return (
     <li className="px-4 py-4">
       <div className="mb-2 font-medium"><span className="num text-ink-muted">{n}.</span> {task.prompt}</div>
@@ -259,22 +263,35 @@ function TaskReview({ n, task, attempt }: { n: number; task: Task; attempt: Atte
         </div>
       </div>
       <ul className="mt-3 space-y-1">
-        {task.criteria.map((cr) => <CriterionLine key={cr.id} cr={cr} outcome={attempt.criterionResults[cr.id]?.outcome ?? "missed"} gradedBy={attempt.criterionResults[cr.id]?.gradedBy} />)}
+        {task.criteria.map((cr) => <CriterionLine key={cr.id} c={c} cr={cr} outcome={attempt.criterionResults[cr.id]?.outcome ?? "missed"} gradedBy={attempt.criterionResults[cr.id]?.gradedBy} />)}
       </ul>
     </li>
   );
 }
 
-function CriterionLine({ cr, outcome, gradedBy }: { cr: RubricCriterion; outcome: CriterionOutcome; gradedBy?: string }) {
+function CriterionLine({ c, cr, outcome, gradedBy }: { c: SimulationCase; cr: RubricCriterion; outcome: CriterionOutcome; gradedBy?: string }) {
   const tone = outcome === "met" ? "green" : outcome === "partial" ? "amber" : "red";
   return (
     <li className="flex items-start gap-2 text-[12px]">
       <Badge tone={tone}>{outcome}</Badge>
       <span className="text-ink-muted">
         {cr.expectation} <span className="text-ink-faint">({CATEGORY_LABELS[cr.category]}, {cr.points} pts{gradedBy ? `, ${gradedBy}-graded` : ""})</span>
+        <span className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px]">
+          <span className="text-ink-faint">Basis:</span>
+          {cr.basis.map((b, i) => <BasisChip key={i} c={c} b={b} />)}
+        </span>
       </span>
     </li>
   );
+}
+
+/** Shows what makes the expected answer true: an official rule, a general concept, or a case fact. */
+function BasisChip({ c, b }: { c: SimulationCase; b: Basis }) {
+  if (b.kind === "plan_rule") return <span className="inline-flex items-center gap-1"><Badge tone="blue">Plan rule</Badge><RuleLink id={b.ruleId} /></span>;
+  if (b.kind === "general_concept")
+    return <Link to={`/learn/concepts/${b.conceptId}`} className="hover:underline"><Badge>Concept</Badge> {conceptById(b.conceptId)?.term ?? b.conceptId}</Link>;
+  if (b.kind === "case_fact") return <span><Badge tone="amber">Case fact</Badge> {c.documents.find((d) => d.id === b.documentId)?.title ?? b.documentId}</span>;
+  return <span><Badge tone="violet">Assumption</Badge> #{b.assumptionIndex + 1}</span>;
 }
 
 function AnswerText({ task, answer }: { task?: Task; answer?: Answer }) {

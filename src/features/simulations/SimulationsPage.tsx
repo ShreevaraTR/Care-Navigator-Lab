@@ -64,7 +64,7 @@ export function SimulationsPage() {
       </Card>
 
       <p className="mt-4 text-[12px] text-ink-muted">
-        The 20 portfolio cases will be added in the content phase. Sample cases use fictional plans and exist to exercise the engine.
+        The 20 portfolio cases will be added in the content phase. Every case is validated against the Remote Health USA knowledge base before it can load.
       </p>
     </>
   );

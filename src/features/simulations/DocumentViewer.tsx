@@ -11,6 +11,7 @@ import type {
   ProviderBillDocument,
 } from "@/domain/case";
 import { formatCents as $, formatDate } from "@/lib/format/money";
+import { ruleById } from "@/content/plan-knowledge";
 
 export const DOCUMENT_TYPE_LABELS: Record<CaseDocument["type"], string> = {
   eob: "EOB",
@@ -228,17 +229,21 @@ function AuthView({ doc }: { doc: AuthorizationDocument }) {
 function BenefitsView({ doc }: { doc: BenefitSummaryDocument }) {
   return (
     <>
-      {doc.isSimulatedPlan && (
+      {doc.isSimulatedPlan ? (
         <p className="mb-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-[13px] text-amber-900">
           Fictional training plan. These rules exist only for this case and are not Remote Health USA policy.
+        </p>
+      ) : (
+        <p className="mb-3 rounded-md border border-sky-200 bg-sky-50 px-3 py-2 text-[13px] text-sky-900">
+          Official {doc.planName} rules, quoted from the knowledge base. Select a badge to see the source and page.
         </p>
       )}
       <table className="data-table">
         <tbody>
           {doc.items.map((it) => (
             <tr key={it.label}>
-              <td className="w-1/2 text-ink-muted">{it.label}</td>
-              <td>{it.value}</td>
+              <td className="w-1/3 text-ink-muted">{it.label}</td>
+              <td>{it.ruleId ? ruleById(it.ruleId)?.statement ?? <span className="text-rose-700">Unknown rule {it.ruleId}</span> : it.value}</td>
               <td className="text-right"><SourceBadge provenance={it.provenance} /></td>
             </tr>
           ))}

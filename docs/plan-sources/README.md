@@ -1,22 +1,13 @@
-# Authoritative plan sources
+# Plan sources
 
-This folder holds the **source of truth** for plan-specific rules (Remote Health USA). It is empty on purpose: the lab must not invent SafetyWing policy.
+Verification copies of the official material behind every Remote Health USA plan rule in the lab.
 
-## Adding material
+| File | What it is |
+|---|---|
+| `rhus-benefits-overview-2025-12-16.extract.txt` | Page-marked text extract of the official benefits overview PDF (https://safetywing.com/api/policy/113, "RH USA benefits synopsis Full_2025-12-16", 21 pp., accessed 2026-10-03, SHA-256 in header) |
+| `rhus-public-page-2026-10-03.extract.txt` | Visible text of https://safetywing.com/remote-health-us, accessed 2026-10-03 |
+| `RHUS_RULES.md` | **Generated** register of every plan rule: statement, status, confidence, source, URL, version, page, section, verbatim quote, date accessed |
 
-1. Put the document (or a faithful text extract, with page/section references) in this folder, e.g. `remote-health-usa-plan-details-2026.md`.
-2. Register it in `src/content/plan-sources/index.ts`:
+Extracts are unedited apart from page markers and whitespace trimming. Tests check every rule's quote against these files, so **don't edit them by hand**. A new version of a source gets a new file and a new source id.
 
-   ```ts
-   { id: "rhu-plan-details-2026", title: "Remote Health USA: Plan details", plan: "Remote Health USA",
-     effectiveDate: "2026-01-01", location: "docs/plan-sources/remote-health-usa-plan-details-2026.md",
-     addedAt: "2026-10-03" }
-   ```
-
-3. Cite it from case content:
-
-   ```ts
-   provenance: { kind: "plan_rule", sourceRef: "rhu-plan-details-2026", locator: "§4.2 Prior authorization" }
-   ```
-
-Validation fails if a `plan_rule` cites an unregistered source. Anything not backed by a document here must be labelled `general_concept`, `case_fact` or `assumption`.
+Full process: [`../REMOTE_HEALTH_US_KNOWLEDGE_BASE.md`](../REMOTE_HEALTH_US_KNOWLEDGE_BASE.md).
