@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
-import { Badge, Card, PageHeader } from "@/components/ui";
+import { Badge, ButtonLink, Card, PageHeader } from "@/components/ui";
 import { cases } from "@/content/cases";
 import { blockedSpecs } from "@/content/cases/portfolio/placeholders";
 import type { SimulationCase } from "@/domain/case";
@@ -39,6 +39,7 @@ export function SimulationsPage() {
               <th>Primary skills</th>
               <th className="w-28">Recording</th>
               <th className="w-24 text-right">Best score</th>
+              <th className="w-28"><span className="sr-only">Open</span></th>
             </tr>
           </thead>
           <tbody>
@@ -62,6 +63,7 @@ export function SimulationsPage() {
                 <td><Badge tone="red">{b.status}</Badge></td>
                 <td>—</td>
                 <td className="text-right">—</td>
+                <td />
               </tr>
             ))}
           </tbody>
@@ -90,8 +92,11 @@ export function SimulationsPage() {
         <td>
           <div className="flex flex-wrap gap-1">{c.skills.map((s) => <Badge key={s}>{SKILL_LABELS[s]}</Badge>)}</div>
         </td>
-        <td>{c.recordingPriority ? <Badge tone={c.recordingPriority === "high" ? "brand" : "neutral"}>{c.recordingPriority}</Badge> : <Badge tone="violet">practice</Badge>}</td>
+        <td>{c.recordingPriority ? <Badge tone={c.recordingPriority === "high" ? "brand" : "neutral"}>{c.recordingPriority}</Badge> : <Badge tone="violet">warm-up</Badge>}</td>
         <td className="num text-right font-medium">{best >= 0 ? best : "—"}</td>
+        <td className="text-right">
+          <ButtonLink to={`/simulations/${c.id}`} variant={inProgress ? "secondary" : "primary"}>{inProgress ? "Continue" : "Practice"}</ButtonLink>
+        </td>
       </tr>
     );
   }
@@ -100,7 +105,7 @@ export function SimulationsPage() {
 function TierRow({ label }: { label: string }) {
   return (
     <tr>
-      <td colSpan={5} className="bg-slate-50 py-1.5 text-[11px] font-semibold tracking-wide text-ink-muted uppercase">{label}</td>
+      <td colSpan={6} className="bg-slate-50 py-1.5 text-[11px] font-semibold tracking-wide text-ink-muted uppercase">{label}</td>
     </tr>
   );
 }
